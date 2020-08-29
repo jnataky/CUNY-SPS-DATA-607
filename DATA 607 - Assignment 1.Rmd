@@ -1,0 +1,44 @@
+---
+title: "DATA 607 Week1 Assignment"
+author: "Magnus Skonberg"
+date: "8/28/2020"
+output: html_document
+---
+
+### Purpose <br />
+To load and transform a dataset using R.
+
+### Article Overview <br />
+Pollsters have been busy fielding surveys to measure concern levels since the first known case of COVID-19 was reported to the CDC back in January. They’ve polled respondents on the government's handling of the infection, concern levels regarding the infection, and concern levels regarding the state of the economy.
+
+[article link](https://projects.fivethirtyeight.com/coronavirus-polls/)
+
+### Overview of Approach <br />
+So as to not get lost in the amount of data in the selected dataset, I will focus exclusively on concern levels (stemming from COVID) regarding the current state of the economy and see whether there are interesting findings therein ...
+
+******
+
+### Load the dataset <br />
+Load the .csv from github (in its raw form) into dataframe variable ccdata (Covid concern data)
+
+```{r}
+ccdata <- read.csv("https://raw.githubusercontent.com/Magnus-PS/CUNY-SPS-DATA-607/Assignment-1/covid_concern_polls.csv", header = TRUE, sep = ",")
+```
+
+### Transform the dataset <br />
+Create subset of ccdata based on the 1st 10 columns and rename column headers to be more meaningful / indicative in the process
+
+```{r}
+new_ccdata <- data.frame(Pollster = ccdata$pollster[1:10], Date = ccdata$start_date[1:10], Number_of_Respondents = ccdata$sample_size[1:10], Question = ccdata$text[1:10], Percent_Very_Concerned = ccdata$very[1:10], Percent_Not_Concerned = ccdata$not_very[1:10])
+```
+
+### Plot the data - extra credit <br />
+Create a simple plot / visual of the data set with clearly labelled axes.
+```{r}
+plot(new_ccdata$`Percent_Very_Concerned`,main="COVID Concern Levels", sub="Those very concerned regarding the current state of the economy", xlab="Poll #", ylab="Very Concerned (%)")
+```
+
+******
+
+### Conclusions and Findings <br />
+Based on the selected data, 57.8% of respondents are very concerned regarding the current state of the economy while only 6.8% are not concerned. Thus,  the economy is very likely to be a MAJOR point of discussion in the upcoming election. If I were to update the article on fivethirtyeight.com I would highlight this finding.
