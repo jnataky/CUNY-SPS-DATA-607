@@ -1,0 +1,141 @@
+---
+title: "DATA 607 Assignment 2"
+author: "Magnus Skonberg"
+date: "9/2/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## OVERVIEW {.tabset}
+The purpose of this assignment was to collect data, store it in a relational (SQL) database, and then import this data into an R dataframe to analyze it.
+
+I polled (6) immediate family members and/or significant others regarding (5) movies that had come out in the past year, asked for their rating, from 1 to 5, and stored their response or a -1 (if they hadn't seen the movie). I processed these -1s in SQL by replacing the -1 with a null value.
+
+To store these results and build a relational database in SQL, I used (3) separate .csv files - movies, raters, and ratings. These tables are all available on github: https://github.com/Magnus-PS/CUNY-SPS-DATA-607/tree/Assignment-2.
+
+
+## STORING DATA IN A RELATIONAL DATABASE {.tabset}
+The corresponding SQL code used to create and populate tables from corresponding .csv is provided below: \hfill\break
+
+```{sql, eval=FALSE}
+
+/* CUNY SPS - DATA 607 - Assignment 2 */
+/* Student: Magnus Skonberg */
+/* Date: September 2nd 2020 */
+
+/* Purpose: to import data from a .csv and populate tables in mySQL to create a relational database. */
+
+DROP TABLE IF EXISTS rater; 
+DROP TABLE IF EXISTS movie;
+DROP TABLE IF EXISTS rating;
+
+CREATE TABLE rater(
+raterID int NOT NULL PRIMARY KEY,
+raterName VARCHAR(10) NOT NULL UNIQUE
+  );
+
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/rater.csv'
+INTO TABLE rater
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(raterID, raterName);
+
+CREATE TABLE movie
+(
+movieID int NOT NULL PRIMARY KEY,
+movieTitle varchar(30) NOT NULL UNIQUE
+);
+
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/movie.csv'
+INTO TABLE movie
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(movieID, movieTitle);
+
+CREATE TABLE rating(
+movieID int NOT NULL REFERENCES movie(movieID),
+raterId int NOT NULL REFERENCES rater(raterID),
+rating int NULL
+  );
+  
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/rating.csv'
+INTO TABLE rating
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(movieID, raterID, @rating)
+SET rating = nullif(@rating, -1);
+
+select * from movie;
+select * from rater;
+select * from rating;
+
+```
+
+Once the relational database had been built out (using SQL), I set out to establish a connection between RStudio and MySQL to import this data.
+
+
+## CONNECT TO MYSQL {.tabset}
+Write code in R markdown to import DB data (from SQL) for analysis. \hfill\break
+*Missing data was handled during SQL load.* \hfill\break
+
+```{r}
+
+library(RCurl);
+library(DBI);
+library(RMySQL);
+library(ggplot2);
+
+movieDB <- dbConnect(MySQL(), user='root', password='pass123', dbname='movie_ratings', host='localhost')
+
+```
+
+Once the connection had been established, I read from the SQL database. \hfill\break
+\hfill\break
+*Note: this step took a good amount of time / effort due to a bug in the 8.0.21 version of MySQL for Windows10. To get around this issue, I uninstalled the 8.0.21 version and installed the 8.0.20 version of MySQL and altered the password encryption to allow a connection between MySQL and RStudio.* \hfill\break
+
+```{r}
+
+dbListTables(movieDB);
+
+new_movie <- dbReadTable(movieDB, "movie")
+
+new_rater <- dbReadTable(movieDB, "rater")
+
+new_rating <- dbReadTable(movieDB, "rating")
+
+new_movie
+new_rater
+new_rating
+
+```
+
+## INCLUDE A QUALITY GRAPHIC OR TABLE {.tabset}
+
+To display the Avg Movie Rating (by MovieID), I deemed it necessary to create a table of the average rating plot per movie ID. To find this avg_rating number, the sum of (non-null) ratings per movieID was taken over the number of the number of non-null ratings. \hfill\break
+
+```{r} 
+
+movie <- 1:5
+avg_rating <- c(23/6, 27/6, 25/6, 13/4, 12/3)
+
+avg <- as.table(setNames(avg_rating, movie))
+
+barplot(avg, main="Avg Movie Rating (by MovieID)", horiz=TRUE,
+  names.arg=c("1", "2", "3", "4", "5"))
+
+```
+
+## ANALYSIS & CONCLUSION {.tabset}
+
+Based on the above barplot, we can see that all movies had an average rating of 3 or higher with movie #4 (Capone) having the lowest avg movie rating and movie #2 (Eurovision) having the highest avg movie rating. Thus, if I were to recommend movies to this particular subset of movie viewers, a comedy similar to 'Eurovision' would be a better recommendation than a drama bio-flick like 'Capone'. \hfill\break \hfill\break
