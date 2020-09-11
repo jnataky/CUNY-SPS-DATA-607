@@ -1,0 +1,97 @@
+---
+title: "DATA 607 - Wk3 HOL"
+author: "Magnus Skonberg"
+date: "9/8/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+### 1. Create a vector of strings and identify strings that match a particular criteria.
+
+```{r}
+fish <- c("salmon", "tilapia", "cod", "tuna", "swordfish" )
+fish == "salmon"
+```
+
+### 2. Replace instances of a string with another of your choosing.
+
+```{r}
+
+grep(pattern = 'til', fish, value = TRUE, ignore.case = TRUE)
+gsub(pattern = "til", replacement = "shark", fish[2])
+
+```
+
+### 3. Identify positions of interest within your string.
+
+```{r}
+which(fish == "cod")
+```
+
+### 4. Use separators to combine multiple string outputs together.
+```{r}
+str_c(fish[1], fish[2], sep = ", ")
+```
+
+### 5. Use collapse to combine multiple string outputs together.
+
+```{r}
+
+str_c(c(fish[1], fish[2], fish[3]), collapse = ", ")
+
+```
+
+### 6. Change the case of strings.
+
+```{r}
+str_to_upper(fish[1])
+str_to_lower(fish[1])
+```
+### 7. Convert dates between different formats.
+
+```{r}
+now()
+
+sept_ymd <- ymd("2020-09-08")
+
+mdy("September 8th, 2020")
+
+dmy("8-Sep-2020")
+
+ymd(20200908)
+
+as_datetime(today())
+
+as_date(now())
+
+year(now())
+
+datetime <- ymd_hms("2016-07-08 12:34:56")
+
+year(datetime) <- 2020
+hour(datetime) <- hour(datetime) + 1
+
+datetime
+
+
+```
+### 8. Identify how long ago dates occurred.
+
+```{r}
+
+m_age <- today() - ymd(19910528)
+m_age / 365
+
+next_year <- today() + years(1)
+(today() %--% next_year) %/% days(1)
+
+
+```
