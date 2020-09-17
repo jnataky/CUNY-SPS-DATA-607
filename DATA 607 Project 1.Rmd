@@ -1,0 +1,117 @@
+---
+title: "DATA 607 Project 1"
+author: "Magnus Skonberg"
+date: "`r Sys.Date()`"
+output: 
+  openintro::lab_report: default
+  html_document:
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE}
+#load string and datatables libraries
+library(stringr)
+library(DT)
+```
+
+## Background
+In this project, we’re given a text file with chess tournament results where the information has some structure. Our job is to create an R Markdown file that generates a .CSV file (that could for example be imported into a SQL database)
+with the following information for all of the players:
+
+*Player Name | State | Total Points | Pre-Rating | Avg Opp Pre-Rating*
+
+For the first player, the information would be:
+*Gary Hua, ON, 6.0, 1794, 1605*
+
+*1605 was calculated by using the pre-tournament opponents’ ratings of 1436, 1563, 1600, 1610, 1649, 1663, 1716, and dividing by the total number of games played.*
+
+## Step 1
+Import the data from the text file into a list variable.
+
+```{r}
+chess_input <- read.table(url("https://raw.githubusercontent.com/Magnus-PS/CUNY-SPS-DATA-607/Project-1/tournamentinfo.txt"), sep = ",")
+
+head(chess_input)
+```
+From the output above, we can see that the header has been included and that the data is not organized. Thus, *prior to* outputting our data in the desired form, we'll have to pull variables, etc. from this set in an organized manner.
+
+## Step 2
+
+Use regular expressions to wrangle data and sort through our 'raw' data set for what is essential / desired.
+
+Remove header, "---" (dashed lines), and "  " excess white spaces.
+
+```{r}
+#Remove header
+chess_input <- chess_input[-c(1:4),]
+
+#Exclude every 3rd row (of dashed lines)
+i <- seq(0, 192, 3)
+chess_input <- chess_input[-i]
+
+#Compress white space for readability ... maybe not essential
+chess_input <- str_replace_all(chess_input, "\\s+", " ")
+
+head(chess_input)
+
+```
+
+If we observe the result of our processed data, we see that we have alternating rows of values where the values themselves are separated by "|"s.
+
+**Odd rows**: ID | Player Name | Total Pts | W/L/D Opp# ...
+
+**Even rows**: State | USCF ID | Rtg Pre -> Post | ...
+
+We could sort by row value *and then* extract the essential bits from these sorted data sets.
+
+```{r}
+#Sort data by row value for easier extraction later.
+
+o_rows <- seq(1, 128, 2)
+e_rows <- seq(2, 128, 2)
+  
+o_chessdata <- data.frame(x=chess_input[o_rows])
+e_chessdata <- data.frame(x=chess_input[e_rows])
+
+head(o_chessdata)
+head(e_chessdata)
+
+```
+We now have 2 dataframes of characters with desired variables to be extracted from these dataframes based on their location (described earlier). 
+
+Here we're going to match patterns with regular expressions to pull desired variables from the dataframes (shown above) to later re-unite as one dataframe *prior to* their output via .csv file.
+
+LEFT OFF HERE ...
+
+```{r}
+#Extract player IDs: 
+##1: extract digits followed by " |" then extract 
+id<-str_extract_all(o_chessdata,"\\d{1,2} \\| ")
+id<-id[complete.cases(id)]
+id<-str_extract(id,"\\d{1,2}")
+head(id)
+
+#LEFT OFF HERE: figure out how to create list of 64 elements with each ID value
+
+#Extract player names
+
+#Extract player point total
+
+#Extract player state
+
+#Extract player pre-rating
+
+#... at this point there are likely mathematical calculations, etc. req'd to solve for the avg opponent pre-rating. I'll have to come up with a manner of doing this as it's not simple extraction ...
+
+```
+
+## Step 3
+Generate a .csv file.
+
+```{r}
+#Insert r code here
+```
