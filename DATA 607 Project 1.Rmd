@@ -13,9 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r libraries, include=FALSE}
-#load string and datatables libraries
-library(stringr)
-library(DT)
+#load relevant libraries
+library(tidyverse) #includes stringr package
+library(stringi)
 ```
 
 ## Background
@@ -77,35 +77,70 @@ e_rows <- seq(2, 128, 2)
 o_chessdata <- data.frame(x=chess_input[o_rows])
 e_chessdata <- data.frame(x=chess_input[e_rows])
 
-head(o_chessdata)
-head(e_chessdata)
+string_o <- toString(o_chessdata)
+string_e <- toString(e_chessdata)
 
 ```
 We now have 2 dataframes of characters with desired variables to be extracted from these dataframes based on their location (described earlier). 
 
 Here we're going to match patterns with regular expressions to pull desired variables from the dataframes (shown above) to later re-unite as one dataframe *prior to* their output via .csv file.
 
-LEFT OFF HERE ...
-
 ```{r}
 #Extract player IDs: 
-##1: extract digits followed by " |" then extract 
-id<-str_extract_all(o_chessdata,"\\d{1,2} \\| ")
-id<-id[complete.cases(id)]
-id<-str_extract(id,"\\d{1,2}")
-head(id)
+id<-unlist(str_extract_all(string_o,"\\d{1,2} \\| "))
+id<-unlist(str_extract_all(id, "\\d{1,2}"))
 
-#LEFT OFF HERE: figure out how to create list of 64 elements with each ID value
+#Extract player names:
+name <-unlist(str_extract_all(string_o,"\\w+ ?\\w+ \\w+"))
 
-#Extract player names
+#Extract player point total:
+pt_total <-unlist(str_extract_all(string_o,"\\d.\\d"))
 
-#Extract player point total
+#Extract player state:
+state <-unlist(str_extract_all(string_e, " \\w{2} \\| "))
+state<-unlist(str_extract_all(state, "\\w{2}"))
 
-#Extract player state
+#Extract player pre-rating:
+prerating <-unlist(str_extract_all(string_e, "(R:\\s*)(\\d+)"))
+prerating <-unlist(str_extract_all(prerating, "(\\d+)"))
 
-#Extract player pre-rating
+```
 
-#... at this point there are likely mathematical calculations, etc. req'd to solve for the avg opponent pre-rating. I'll have to come up with a manner of doing this as it's not simple extraction ...
+At this point, we've extracted the players ID, name, point total, state, and pre-rating and created lists of 1 (strings). Now we would like to combine what we've extracted (the variables of interest) into one table. We can then create a versus table corresponding to each chess player's ID and use that table in combination with their ID and their opponents ID and preranking to compute our avg_opponent_preranking.
+
+```{r}
+
+#Build dataframe of all variables up to this point, create a mapping matrix of 'versus' and then use this matrix in combination with the built dataframe to compute avg_opp_prerating
+
+###Refer to Jered or Rick's here ... I've hit a ROADBLOCK
+
+#Create matrix mapping of 'versus opponents'
+vs<-unlist(str_extract_all(toString(o_chessdata),"\\|[0-9].*"))
+vs<-unlist(str_replace_all(vs, "\\s{1,2}\\|", "0|"))
+vs<-unlist(str_extract_all(vs,"\\s\\d{1,2}"))
+vs #I'd referred to Jered's here but for some reason the structure of my output is different ... 64 x 7= 448 and thus there are 16 extra values ... where do they come from and how do I get rid of them ... then how do I create a matrix in the proper order of extry so that I can account non-value entries when building out this matrix (as highlighted on slack)
+
+#How do I get it so that I start a new row every 7 values?
+
+#once I've figured that out ... use a for loop and ID#s to iterate over preratings in building avg_opponent ratings
+
+```
+
+
+```{r}
+
+opponents<-matrix(nrow=64,ncol=7)
+
+#Step 3: use 'versus opponents' matrix and reference to combined dataframe to calculate avg_opp_prerating
+
+```
+
+```{r}
+
+#Combine lists of strings into dataframe
+
+combined <- data.frame(id, name, state, pt_total, prerating)
+colnames(combined) <- c("ID", "Player Name", "Player's State", "Point Total", "Pre Rating") #waiting to calculate and add avg_opp_rating
 
 ```
 
@@ -114,4 +149,8 @@ Generate a .csv file.
 
 ```{r}
 #Insert r code here
+
+#ie. write.csv(Your DataFrame,"Path where you'd like to export the DataFrame\\File Name.csv", row.names = FALSE)
+
+
 ```
