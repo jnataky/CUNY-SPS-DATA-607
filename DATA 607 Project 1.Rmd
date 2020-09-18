@@ -74,34 +74,34 @@ We could sort by row value *and then* extract the essential bits from these sort
 o_rows <- seq(1, 128, 2)
 e_rows <- seq(2, 128, 2)
   
-o_chessdata <- data.frame(x=chess_input[o_rows])
-e_chessdata <- data.frame(x=chess_input[e_rows])
+o_chess <- unlist(data.frame(x=chess_input[o_rows]))
+e_chess <- unlist(data.frame(x=chess_input[e_rows]))
 
-string_o <- toString(o_chessdata)
-string_e <- toString(e_chessdata)
+head(o_chess)
+head(e_chess)
 
 ```
-We now have 2 dataframes of characters with desired variables to be extracted from these dataframes based on their location (described earlier). 
+We now have 2 atomic vectors, from which we can extract our desired variables (described earlier). 
 
 Here we're going to match patterns with regular expressions to pull desired variables from the dataframes (shown above) to later re-unite as one dataframe *prior to* their output via .csv file.
 
 ```{r}
 #Extract player IDs: 
-id<-unlist(str_extract_all(string_o,"\\d{1,2} \\| "))
+id<-unlist(str_extract_all(o_chess,"\\d{1,2} \\| "))
 id<-unlist(str_extract_all(id, "\\d{1,2}"))
 
 #Extract player names:
-name <-unlist(str_extract_all(string_o,"\\w+ ?\\w+ \\w+"))
+name <-unlist(str_extract_all(o_chess,"\\w+ ?\\w+ \\w+"))
 
 #Extract player point total:
-pt_total <-unlist(str_extract_all(string_o,"\\d.\\d"))
+pt_total <-unlist(str_extract_all(o_chess,"\\d.\\d"))
 
 #Extract player state:
-state <-unlist(str_extract_all(string_e, " \\w{2} \\| "))
+state <-unlist(str_extract_all(e_chess, " \\w{2} \\| "))
 state<-unlist(str_extract_all(state, "\\w{2}"))
 
 #Extract player pre-rating:
-prerating <-unlist(str_extract_all(string_e, "(R:\\s*)(\\d+)"))
+prerating <-unlist(str_extract_all(e_chess, "(R:\\s*)(\\d+)"))
 prerating <-unlist(str_extract_all(prerating, "(\\d+)"))
 
 ```
@@ -112,17 +112,14 @@ At this point, we've extracted the players ID, name, point total, state, and pre
 
 #Build dataframe of all variables up to this point, create a mapping matrix of 'versus' and then use this matrix in combination with the built dataframe to compute avg_opp_prerating
 
-###Refer to Jered or Rick's here ... I've hit a ROADBLOCK
+opp_ids<-unlist(str_extract_all(o_chess,"\\|[0-9].*"))
+opp_ids<-str_replace_all(opp_ids, "[HU]", " 0")
+opp_ids<-str_extract_all(opp_ids,"\\s\\d{1,2}")
+opp_ids
 
-#Create matrix mapping of 'versus opponents'
-vs<-unlist(str_extract_all(toString(o_chessdata),"\\|[0-9].*"))
-vs<-unlist(str_replace_all(vs, "\\s{1,2}\\|", "0|"))
-vs<-unlist(str_extract_all(vs,"\\s\\d{1,2}"))
-vs #I'd referred to Jered's here but for some reason the structure of my output is different ... 64 x 7= 448 and thus there are 16 extra values ... where do they come from and how do I get rid of them ... then how do I create a matrix in the proper order of extry so that I can account non-value entries when building out this matrix (as highlighted on slack)
+#Yippee :) Got the table I'd wanted
 
-#How do I get it so that I start a new row every 7 values?
-
-#once I've figured that out ... use a for loop and ID#s to iterate over preratings in building avg_opponent ratings
+#Next: use for loop and ID#s to iterate over preratings in building avg_opponent ratings
 
 ```
 
