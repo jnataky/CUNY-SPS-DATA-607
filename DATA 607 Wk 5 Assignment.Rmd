@@ -18,6 +18,7 @@ library(openintro)
 library(dplyr)
 library(tidyr)
 library(RCurl)
+library(ggplot2)
 ```
 
 
@@ -91,11 +92,17 @@ for (n in c(2,6,10,14,18)){
 data_long <- spread(data_long, "Status", "n")
 data_long
 
+qplot(x=delayed, y=`on time`, data=data_long, col= Airline, main="On Time v Delayed Flights", xlab="# of delayed flights", ylab="# of on time flights")
+
 ```
 
-What started as a *less clear* 5x7 'wide' table ("data") is now a  *tidy* 4x10 'long' table ("data_long"). 
+What started as a *less clear* 5x7 'wide' table ("data") is now a  *tidy* 4x10 'long' table ("data_long") with an associated plot (above) showing the relationship between on time and delayed flights for each Airline. 
 
-With tidying complete, we move on to transforming our data. We'll make use of dplyr() to transform data and perform mathematical calculations to solve for our variables. After this point, we should have all we need to plot and *clearly* observe the difference in delays between the two airlines.
+*Each point on the plot represents an airport, with the point of this plot being to show the range in scale (ie. # of flights) between different data in our data set.*
+
+...
+
+With tidying complete, we move on to transforming our data. We'll make use of dplyr() to transform data and perform mathematical calculations to solve for our variables. After this point, we should have all we need to *clearly* observe the difference in delays between the two airlines.
 
 We can identify our high-level variables of interest as:
 (1) What airline has the lowest overall probability of arrival delay?
@@ -103,55 +110,50 @@ We can identify our high-level variables of interest as:
 
 To calculate (1), we can take the total flights delayed and on time per airline, sum them together, and observe the probability of delay for each airline.
 
-To calculate (2), we can perform the same operations, just this time we will select for the airport first and then the airline.
-
 ```{r}
 #Transform the data: dplyr
 
 ##Compute the probability of an Alaska flight arriving on time
 ak <- filter(data_long, Airline == "ALASKA")
 ak_on_time <- sum(ak$`on time`) / (sum(ak$delayed) + sum(ak$`on time`))
-ak_on_time
+round(ak_on_time, digits = 3)
 
 #Compute the probability of an AM West flight arriving on time
 aw_flts <- filter(data_long, Airline == "AM WEST")
 aw_on_time <- sum(aw_flts$`on time`) / (sum(aw_flts$delayed) + sum(aw_flts$`on time`))
-aw_on_time
+round(aw_on_time, digits = 3)
 
 ```
-**AM West has a better total on time probability.**
+We first observe that **AM West has a better *total* on time probability.** Meaning that for on time flight total over total number of flights (incl. delay) AM West has a better on time probability than ALASKA.
 
-Thus it would be the better airline to fly with if the passenger in question wanted to arrive on time and didn't have access to specific airport data. 
-
-But we do have access to specific airport data ...
-
-Let's explore: which airline is better to fly with (greater on time probability) per airport?
-
-```{r}
-
-##Los Angeles - Alaskan Air
-la_ak <- filter(data_long, Airport == "Los.Angeles" & Airline == "ALASKA")
-la_ak_on_time <- sum(la_ak$`on time`) / (sum(la_ak$delayed) + sum(la_ak$`on time`))
-la_ak_on_time
-
-##Los Angeles - AM West Air
-la_aw <- filter(data_long, Airport == "Los.Angeles" & Airline == "AM WEST")
-la_aw_on_time <- sum(la_aw$`on time`) / (sum(la_aw$delayed) + sum(la_aw$`on time`))
-la_aw_on_time
-
-
-
-#Compute the probability of an AM West flight arriving on time
-aw_flts <- filter(data_long, Airline == "AM WEST")
-aw_on_time <- sum(aw_flts$`on time`) / (sum(aw_flts$delayed) + sum(aw_flts$`on time`))
-aw_on_time
-
-```
+But we can't close on this conclusion as it's very high level. We've got to observe the probabilities at each individual Airport. Thus exploring, (2) At each airport, which airline has the lower probability of arrival delay?
 
 ### (3) Analyze and compare.
 
 Compare arrival delays between the two airlines.
 
 ```{r}
-#associated r code
+#Initialize counter then create new column on_time_prob to store the on time probability for each Airline at each Airport via for loop
+n <- 1
+
+for (n in c(1:10)){
+    data_long$on_time_prob[n] <- round(data_long$`on time`[n] / (data_long$`on time`[n] + data_long$delayed[n]), digits = 3)
+    n <- n+1
+}
+
+data_long
+
+qplot(x=Airport, y=on_time_prob, data=data_long, col= Airline, main="On Time Probability v Airport", xlab="Airport", ylab="Probability of an On Time Arrival")
 ```
+
+Using the table and plot above, we can observe that for every Airport, Alaskan Air has a better probability of being on time.
+
+Thus there is a discrepancy in the data. At a macro scale it would seem AM WEST would be the better Airline to choose but when we zoom on each Airline's performance per Airport we see that ALASKA actually performs better.
+
+### (4) Conclude and recommend.
+
+The reason that the *total* on time probability favors AM WEST is because AM WEST has 4840 flights for Phoenix that are on time (recall our earlier plot), and this is its best performing Airport. If we compare this value to ALASKA's largest volume of flights (1841 at Seattle), we see that it's nearly 3x the volume. 
+
+While ALASKA may have a better on time probability than AM WEST for arrival in Seattle (and every other airport for that matter), AM WEST has ~3x volume on its best performing airport and ALASKA has its greatest volume on one of its lowest performing airports. Thus volume sways the total in AM WEST's favor and paints a "different tale".
+
+**In closing, it may *seem* that AM WEST is better if we just take flight totals into account *but* once we actually dig in and look at on time probabilities per Airline and Airport, we see that ALASKA is the better airline to choose for on time arrival. It outperforms AM WEST at every airport (including Phoenix).**
