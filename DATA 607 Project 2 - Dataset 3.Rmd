@@ -3,8 +3,6 @@ title: "DATA 607 Project 2 - Dataset 3"
 author: "Magnus Skonberg"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     toc: yes
     toc_float: yes
@@ -12,6 +10,8 @@ output:
     theme: cerulean
     highlight: tango
     font-family: Arial
+  pdf_document:
+    toc: yes
 ---
 
 ```{r load-packages, include=FALSE}
@@ -35,14 +35,14 @@ The purpose of this assignment is to *tidy and transform data*. The dataset of i
 
 (1) Create a .csv file in a "wide" structure.
 (2) Read this .csv and use tidyr and dplyr to tidy and transform.
-(3) Analyze which borough had the largest v smallest drp in subway ridership from 2013 to 2018.
+(3) Analyze which borough had the largest v smallest drop in subway ridership from 2013 to 2018.
 (4) Provide the .rmd file, rpubs link, and descriptions of steps taken.
 
 --------------------------------------------------------------------------------
 
 \clearpage
 
-### (1) Create a .csv.
+### (1) Create a .csv
 
 The original data set was downloaded from the NYC MTA's website [available here.](http://web.mta.info/nyct/facts/ridership/ridership_sub_annual.htm)
 
@@ -52,7 +52,7 @@ A wide format .csv was created per assignment description and [uploaded to githu
 
 With the .csv available on github, we shift to reading from this file *prior to* tidying and transforming the data therein.
 
-### (2) Read, tidy, and transform.
+### (2) Read and tidy
 
 We read the .csv (in its raw form) from github and store corresponding data in a variable named "data" (I know ... very creative).
 
@@ -98,7 +98,9 @@ Badabing-badaboom. We got ourselves a long dataset.
 
 What started as a *less clear* 5x8 'wide' table ("data") is now a  *tidy* 5x3 'long' table ("data_chosen") with a corresponding plot that shows that **every borough had a drop in ridership from 2013 to 2018.** 
 
-What we can't see is which borough had the largest v smallest drop in ridership. Using the formula below, we can calculate and then plot this change: 
+### (3) Transform and analyze
+
+What we couldn't observe in the plot above is which borough had the largest v smallest drop in ridership. This is what we were hoping to analyze and thus, we'll lean on transformation and mathematics to draw a clearer picture. More specifically, we can use the following equation:
 
 *((Ridership (2018) - Ridership (2013)) / (Ridership (2013)) x 100)*
 
@@ -127,10 +129,17 @@ m_chg <- as.numeric(round(((m_r[2,3] - m_r[1,3]) / m_r[1,3]) * 100, 2))
 q_r <- filter(data_long, Borough == "Queens")
 q_chg <- as.numeric(round(((q_r[2,3] - q_r[1,3]) / q_r[1,3]) * 100, 2))
 
-#Now recreate the table using these calculated values
+#Now add a column to the table for these calculated values
 data_long$Chg <- c(0, bx_chg, 0, bk_chg, 0, m_chg, 0, q_chg)
 data_long
 
+```
+
+Now that we've performed our essential transformations and calculations, and brought our data into the desired form, the last step is to provide a plot that paints the picture clear as day.
+
+Based on what we're looking for, a barplot (with displayed values) will do the trick:
+
+```{r}
 #Plot the change in ridership for each borough
 rider_chg <- filter(data_long, Year == "2018")
 barplot(rider_chg$Chg, beside=TRUE, main = "Change in ridership from 2013 to 2019 v NYC Borough", xlab = "Borough", ylab = "Chg in Ridership (%)", ylim = c(-7, 0), names.arg = c("Bronx", "Brooklyn", "Manhattan", "Queens"), col=c("#F75252", "#F75252", "#F75252", "#F75252", "#F75252"))
@@ -142,5 +151,23 @@ text(4.3, -4.3, as.character(q_chg), col = "white")
                       
 ```
 
-Analysis and Conclusion
+From this graphic, we observe that all boroughs saw a drop in ridership, 2 boroughs (Brooklyn and Manhattan) saw a slight drop in ridership , 2 boroughs (Queens and the Bronx) saw a significant drop in ridership, **the Bronx saw the greatest drop in ridership, and Manhattan saw the smallest drop in ridership.**
+
+Regarding subway ridership the picture is clear as day: **New Yorkers road the subway less in 2018 than they did in 2013 (especially in the Bronx).**
+
+### (4) Conclude
+
+Fewer New Yorkers are riding the subway and I would have thought the opposite. It raises a lot of questions:
+
+-are the Bronx and Queens less public transport friendly?
+-are trains less reliable in the Bronx and Queens?
+-did more people move to Manhattan and Brooklyn during these years than to the Bronx and Queens?
+-are more people riding their bikes instead of taking the train?
+-were less people riding the train because the economy was good, they had spending cash and thus they taxid, Ubered, or bought a car?
+
+and the list could go on ...
+
+Coming to this conclusion was paradigm-shifting. I would have *assumed* the opposite. 
+
+With more people moving to the city from 2013 - 2018 and more talk of "living green", I would have thought more people would use public transport, but that's not the case. The data tells a different story and raises some pretty interesting questions. 
                       

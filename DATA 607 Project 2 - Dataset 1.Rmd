@@ -39,7 +39,7 @@ The purpose of this assignment is to *tidy and transform data*. The dataset of i
 
 \clearpage
 
-### (1) Create a .csv.
+### (1) Create a .csv
 
 The original data set was downloaded from Kaggle and is [available here.](https://www.kaggle.com/unsdsn/world-happiness)
 
@@ -51,9 +51,9 @@ Our dataset was pulled from the larger Kaggle dataset and focuses exclusively on
 
 With the .csv available on github, we shift to reading from this file *prior to* tidying and transforming the data therein.
 
-### (2) Read, tidy, and transform.
+### (2) Read and tidy
 
-We read the .csv (in its raw form) from github and store corresponding data in a variable named "data" (I know ... very creative).
+We read the .csv (in its raw form) from github and store corresponding data in a variable named "data".
 
 ```{r}
 #Get URL, read .csv (in raw form) from github, and put into tabular form
@@ -101,16 +101,13 @@ What started as a *less clear* 4x7 'wide' table ("data") is now a  *tidy* 10x4 '
 
 What we can see, when we flip between plots is that Finland edges the US in 4/5 metrics. More specifically, from 2015 to 2019, Finland put tremendous ground between itself and the US for Happiness, the US kept the lead in terms of Wealth, Freedom metrics remained close, and for Fellowship and Health Finland gained a little bit of ground on the US.
 
-...
+### (3) Transform and analyze
 
-With tidying complete, we move on to transforming our data. We'll make use of dplyr() to transform data and perform mathematical calculations to solve for our variables. After this point, we should have all we need to *clearly* observe the difference in Happiness v GDP for Finland and the US. More specifically, **how each nation's Happiness v GDP changed between 2015 and 2019.**
-
-
-At a high-level, we have *two* variables of interest: GDP and Happiness. The other *three* variables may play some role in the metric but that is not our focus and thus we will drop these Metrics from our consideration, and take the change in Happiness over the change in GDP for each Finland and the US.
+It's not terribly clear from the 2015 and 2019 graphs above what the tie is (at least for these 2 nations), between happiness and wealth. Thus, we'll transform our dataset and make use of the following equation to better analyze our data: 
 
 *(Happiness (2019) - Happiness (2015)) / (GDP (2019) - GDP (2015))*
 
-We can then compare and plot these values to see what affect, if any income has on happiness in 2019's "Happiest Country in the World" (Finland) v. our home nation (the US).
+We can drop all other variables and compare / plot these values to see what affect, if any income has on happiness in 2019's "Happiest Country in the World" (Finland) v. our home nation (the US).
 
 ```{r}
 #Transform the data: dplyr
@@ -124,17 +121,18 @@ hw <- filter(data_long, Metric == "Happiness" | Metric == "Wealth")
 hw <- select(hw, Country, Metric, Chg)
 hw
 
-##Plot the change in Happiness / change in Wealth for each nation to see if we might draw any interesting insight.
-fin_h_chg <- as.numeric(hw[1,3])
-fin_w_chg <- as.numeric(hw[2,3])
+
+#Calculate the change in Happiness / GDP for Finland and the US
+fin_h_chg <- as.numeric(hw[1,3]) * 100
+fin_w_chg <- as.numeric(hw[2,3]) * 100
 fin_val <- round(fin_h_chg / fin_w_chg, 3)
 
-us_h_chg <- as.numeric(hw[3,3])
-us_w_chg <- as.numeric(hw[4,3])
+us_h_chg <- as.numeric(hw[3,3]) * 100
+us_w_chg <- as.numeric(hw[4,3]) * 100
 us_val <- round(us_h_chg / us_w_chg, 3)
 
 
-##Plot the average score v parent education level for Math
+##Plot the change in Happiness / change in Wealth for each nation to see if we might draw any interesting insight.
 barplot(c(fin_val, us_val), beside=TRUE, main = "Happiness v Wealth for the Finland and the US", xlab = "Country", ylab = "Happiness/Wealth", ylim = c(-10, 10), names.arg = c("Finland", "United States"), col=c("#6699FF", "#6699FF"), border="white")
 
 text(0.75, 6.5, as.character(fin_val))
@@ -142,4 +140,10 @@ text(1.90, -5, as.character(us_val))
 
 ```
 
-###LEFT OFF HERE - explain methodology, analyze results then conclude :)
+### (4) Conclude
+
+From this graphic, it's clear that Finland had a significantly higher change in Happiness-to-Wealth ratio than the US. On top of its increase in wealth, Finland experienced a dramatic increase in happiness and it shows.
+
+What's interesting is the contrast between the US and Finland. Finland's change in wealth (our divisor in the equation noted before) was more than the US's yet their happiness was still far higher. Thus there are other factors at play and we can draw on the fact that **wealth may be tied to happiness but at a certain point more wealth does not necessarily = more happiness.**
+
+A deep dive into the nature of "Happy Nations" could turnover some very interesting insights into what are the Happiest societies in the world, why they are that way, and whether their happiness could be exported elsewhere.

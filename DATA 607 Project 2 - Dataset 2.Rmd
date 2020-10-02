@@ -39,7 +39,7 @@ The purpose of this assignment is to *tidy and transform data*. The dataset of i
 
 \clearpage
 
-### (1) Create a .csv.
+### (1) Create a .csv
 
 The original data set was downloaded from Kaggle and is [available here.](https://www.kaggle.com/spscientist/students-performance-in-exams)
 
@@ -51,7 +51,7 @@ Our dataset was pulled from the larger Kaggle dataset (the 1st 20 students), tra
 
 With the .csv available on github, we shift to reading from this file *prior to* tidying and transforming the data therein.
 
-### (2) Read, tidy, and transform.
+### (2) Read and tidy
 
 We read the .csv (in its raw form) from github and store corresponding data in a variable named "data" (I know ... very creative).
 
@@ -73,20 +73,20 @@ To start, we tidy:
 ##Make observations from variables using gather()
 ##This is also when we convert from a 'wide' to 'long' format
 data_long <- gather(data, "Student", "Score", 2:21, factor_key=TRUE)
-data_long
 
 ##Make variables from observations using spread()
 data_long <- spread(data_long, "Student.Num", "Score")
-data_long
 
 ##Sort columns: Student | Parental Level | Math | Reading | Writing
 data_long <- select(data_long, Student, `Parental Level of Education`, `Math Score`, `Reading Score`, `Writing Score`)
+
+data_long
 
 ```
 
 What started as a *very unclear* 4x21 'wide' table ("data") is now a  *tidy* 20x5 'long' table ("data_long").
 
-...
+### (3) Transform and analyze
 
 With tidying complete, we move on to transforming our data. We'll make use of dplyr() to transform data and perform mathematical calculations to solve for our variables. After this point, we will plot our tidied and transformed data, and should have all we need to *clearly* observe the correlation between student performance and parental education level.
 
@@ -123,8 +123,9 @@ l_avg_write <- sum(as.numeric(low_ed$`Writing Score`)) / nrow(low_ed)
 
 ```
 
-###LEFT OFF HERE - explain methodology then analyze results then conclude :)
-Then, we'll plot average student scores based on parent education level for Math, Reading, and Writing.
+At this point we've re-categorized parent education level and calculated the average score for all students per their categorization. Average test scores were calculated for math, reading, and writing.
+
+We'll make use of barplots to observe the difference in average test scores for each type of test and each parental education categorization.
 
 ```{r}
 
@@ -150,3 +151,24 @@ text(1.90, 50, as.character(m_avg_write))
 text(3.10, 50, as.character(l_avg_write))
 
 ```
+
+**Math test scores:** Upper > Lower > Mid. The student's whose parents fell into the "Upper" education category had the highest average score. It was close across the board though.
+
+**Reading test scores:** Lower > Mid > Upper. The student's whose parents fell into the "Lower" education category had the highest average score by a fairly significant margin.
+
+**Writing test scores:** Lower > Upper > Mid. The student's whose parents fell into the "Lower" education category had the highest average score by a slight margin over the "Upper" education category.
+
+Rather interesting results ...
+
+Based on these results it would seem that the "Lower" parental education category, those whose parents merely went to High School had the highest average test scores.
+
+The runner up would have been the "Upper" group and then the "Mid" 
+group.
+
+### (4) Conclude
+
+It appears, our assumptions could be flipped on their heads. Average test scores were rather close across the board (aside from Reading), *but* where we may have thought the "Upper" group would have outperformed all others, it was the dark horse "Lower" group that ended up scoring the highest average test scores.
+
+With this said, it should be taken with a grain of salt. The sample size was rather small: 20 students considered across 3 categorizations. Thus any outlier (whether high or low) would have had an extraordinary affect on the group's average score.
+
+**A larger dataset should be considered to draw a more decisive conclusion.**
