@@ -41,7 +41,7 @@ The purpose of this assignment is to *tidy and transform data*. The dataset of i
 
 ### (1) Create a .csv
 
-The original data set was downloaded from Kaggle and is [available here.](https://www.kaggle.com/unsdsn/world-happiness)
+The original data set was downloaded from Kaggle and is [available here.](https://www.kaggle.com/unsdsn/world-happiness) **Citation at bottom of page.**
 
 The Happiness Report uses data from the Gallup World Poll and is based on answers to the main life evaluation questions asked in the poll. Rankings run from 0 (worst) to 10 (best), with each individual responding based on the state of their current life v. their ideal life within the nation they call home.
 
@@ -147,3 +147,10 @@ From this graphic, it's clear that Finland had a significantly higher change in 
 What's interesting is the contrast between the US and Finland. Finland's change in wealth (our divisor in the equation noted before) was more than the US's yet their happiness was still far higher. Thus there are other factors at play and we can draw on the fact that **wealth may be tied to happiness but at a certain point more wealth does not necessarily = more happiness.**
 
 A deep dive into the nature of "Happy Nations" could turnover some very interesting insights into what are the Happiest societies in the world, why they are that way, and whether their happiness could be exported elsewhere.
+
+--------------------------------------------------------------------------------
+
+\clearpage
+
+**Data citation**
+Sustainable Development Solutions Network. (2020). World Happiness Report [Data file]. Retrieved from https://www.kaggle.com/unsdsn/world-happiness

@@ -41,7 +41,7 @@ The purpose of this assignment is to *tidy and transform data*. The dataset of i
 
 ### (1) Create a .csv
 
-The original data set was downloaded from Kaggle and is [available here.](https://www.kaggle.com/spscientist/students-performance-in-exams)
+The original data set was downloaded from Kaggle and is [available here.](https://www.kaggle.com/spscientist/students-performance-in-exams) **Citation at bottom of page.**
 
 The data consists of marks secured by students in various subjects. The author seems to have a Finnish name so the data may have been extracted from the Finnish education system (be from Finland (one of the best in the world) ...
 
@@ -172,3 +172,10 @@ It appears, our assumptions could be flipped on their heads. Average test scores
 With this said, it should be taken with a grain of salt. The sample size was rather small: 20 students considered across 3 categorizations. Thus any outlier (whether high or low) would have had an extraordinary affect on the group's average score.
 
 **A larger dataset should be considered to draw a more decisive conclusion.**
+
+--------------------------------------------------------------------------------
+
+\clearpage
+
+**Data citation**
+Jakki Seshapanpu. (2018). Students Performance in Exams [Data file]. Retrieved from https://www.kaggle.com/spscientist/students-performance-in-exams

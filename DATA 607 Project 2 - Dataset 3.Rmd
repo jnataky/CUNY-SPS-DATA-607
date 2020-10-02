@@ -44,7 +44,7 @@ The purpose of this assignment is to *tidy and transform data*. The dataset of i
 
 ### (1) Create a .csv
 
-The original data set was downloaded from the NYC MTA's website [available here.](http://web.mta.info/nyct/facts/ridership/ridership_sub_annual.htm)
+The original data set was downloaded from the NYC MTA's website [available here.](http://web.mta.info/nyct/facts/ridership/ridership_sub_annual.htm) **Citation at bottom of page.**
 
 If you were to scroll down in this set, you would observe the total ridership for each borough from 2013 to 2018, this was the data we concerned ourselves with.
 
@@ -170,4 +170,10 @@ and the list could go on ...
 Coming to this conclusion was paradigm-shifting. I would have *assumed* the opposite. 
 
 With more people moving to the city from 2013 - 2018 and more talk of "living green", I would have thought more people would use public transport, but that's not the case. The data tells a different story and raises some pretty interesting questions. 
-                      
+
+--------------------------------------------------------------------------------
+
+\clearpage
+
+**Data citation**
+The Metropolitan Transportation Authority. (2019). Annual Subway Ridership [Data file]. Retrieved from http://web.mta.info/nyct/facts/ridership/ridership_sub_annual.htm
