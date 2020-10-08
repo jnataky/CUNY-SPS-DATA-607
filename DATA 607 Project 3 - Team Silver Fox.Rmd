@@ -50,6 +50,9 @@ By contrasting our sets via different techniques and visualizations, we further 
 Our general approach is outlined below:
 
 1. Pre-screen: after viewing the initial Kaggle (multipleChoiceResponses.csv) dataset and seeing that we would not be able to access this dataset via Github due to its size (39+ MB), we deemed “pre-screening” the dataset an essential step. We reviewed all 50 questions from the SurveySchema.csv file and marked those that we deemed applicable to providing insight for what the most valuable data science skills are. We then removed all inapplicable columns from the multipleChoiceResponses.csv. Once this dataset had been “pre-screened” it was uploaded to Github along with Jeff Hale’s general and software skill csv files (for later comparison).
+
+<!--If this step is unclear please let me (Magnus) know. I can flesh out more exactly what the criteria was for keeping v. deleting columns (questions) ...-->
+
 2. Acquire data: get the URL, read the .csv from Github (in its raw form), and put it in tabular form.
 3. Tidy and transform: our Kaggle dataset and put Jeff Hale’s in a form we can compare / pull from.
 4. Filter our dataset for another interpretation of “valuable” (education, income, experience level).
@@ -58,7 +61,7 @@ Our general approach is outlined below:
 7. Visualize and analyze.
 8. Conclude.
 
-<!--This is a work-in-progress. There are probably a number of points above that could be better worded, etc. I was just chug-a-lugging along today and wanted to jot out where we could bring our analysis ...-->
+<!--This is a work-in-progress. There are probably a number of points above that could be better worded / fleshed out etc. I was just chug-a-lugging along today and wanted to jot out where our analysis could go based on the words "most valuable" ...-->
 
 ### ACQUIRE DATA
 
