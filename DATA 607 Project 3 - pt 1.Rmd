@@ -1,0 +1,67 @@
+---
+title: "DATA 607 Project 3 - pt 1"
+author: "Team Silver Fox"
+output:
+  pdf_document: default
+  html_document:
+    highlight: pygments
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+  openintro::lab_report: default
+editor_options:
+  chunk_output_type: console
+---
+
+```{r echo = FALSE}
+knitr::opts_chunk$set(eval = TRUE, results = FALSE, fig.show = "hide", message = FALSE)
+```
+
+### Team Members
+
+* Dan Rosenfeld
+* Magnus Skonberg
+* Mustafa Telab
+* Josef Waples
+
+
+### Collaboration Tools
+
+* **Slack:** regular, written communication.
+
+* **Google Meet:** 1-2x/wk meetups.
+
+* **Github:** code sharing and collaboration.
+
+* **Google Docs:** collaborative written project documentation.
+
+
+### Data Source(s)
+
+We identified our sources of data as the following (cited APA-style below):
+
+1. Kaggle. (2018). 2018 Kaggle ML & DS Survey [Data file]. Retrieved from https://www.kaggle.com/kaggle/kaggle-survey-2018?select=multipleChoiceResponses.csv
+
+2. Jeff Hale. (2018). The Most in Demand Skills for Data Scientists [Data file]. Retrieved from https://www.kaggle.com/discdiver/the-most-in-demand-skills-for-data-scientists/log?select=ds_job_listing_software.csv
+
+Our data (identified above) will be loaded in the following manner:
+
+1. **Pre-screen:** after viewing the initial Kaggle (multipleChoiceResponses.csv) dataset and seeing that we would not be able to access this dataset via Github due to its size (39+ MB), we deemed “pre-screening” the dataset an essential step. We reviewed all 50 questions from the SurveySchema.csv file and marked those that we deemed applicable to providing insight for what the most valuable data science skills are. We then removed all inapplicable columns from the multipleChoiceResponses.csv. Once this dataset had been “pre-screened” it was uploaded to Github along with Jeff Hale’s general and software skill csv files (for later comparison).
+
+<!--If this step is unclear please let me (Magnus) know. I can flesh out more exactly what the criteria was for keeping v. deleting columns (questions) ...-->
+
+2. **Acquire data via reading .csv's:** get the URL, read the .csv from Github (in its raw form), and put it in tabular form.
+
+
+### Entity-Relationship Diagram
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
+Create a logical model for your normalized database, and produce an Entity-Relationship (ER) diagram documenting your database design.
+
+</div> \hfill\break
+
+<!--LEFT OFF HERE...-->
