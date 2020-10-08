@@ -1,0 +1,116 @@
+---
+title: "DATA 607 - Project 3"
+author: "Team Silver Fox"
+date: "10/8/2020"
+output: html_document
+---
+
+
+```{r load-packages, include=FALSE}
+library(tidyverse)
+library(openintro)
+library(dplyr)
+library(tidyr)
+library(RCurl)
+library(ggplot2)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### BACKGROUND
+
+> What are the most valued data science skills?
+
+Answering this question formed the crux of our project. 
+
+We collaborated in understanding the question at hand, brainstorming an approach and where we might pull data from, deciding on a dataset and then acquiring, tidying & transforming, visualizing & analyzing this dataset before ultimately coming to the conclusion we'll present later.
+
+Along the way, *Team Silver Fox*  collaborated virtually on Slack, Google Docs, Google Meet, and Github and [insert what we did – in short] in answering the question posed above.
+
+Without further adieu, let’s introduce *Team Silver Fox*:
+
+* **Dan Rosenfeld** – one sentence bio. [Github link]
+* **Magnus Skonberg** – one sentence bio. [Github link]
+* **Mustafa Telab** – one sentence bio. [Github link]
+* **Josef Waples** – one sentence bio. [Github link].
+
+### APPROACH EXPLANATION
+
+We started our search by utilizing Kaggle’s self proclaimed “most comprehensive dataset available on the state of ML and data science”, pulling what we deemed useful from this set.
+
+From our findings of the general dataset, we then applied a “value filter” (ie. only considering responses above a certain income, education, or experience level) to see how the general perspective of essential skills differed from that of a more seasoned (or market-valued) perspective.
+
+At this point, we then transitioned to comparing data science skills deemed as valuable in Kaggle's 2018 survey with the most in-demand skills for data scientists across multiple job sites. This "pro level" dataset, prepared by Jeff Hale, was pulled in to paint the picture of contrast (if there was any) between the skills data scientists deem as most valuable (ie. those doing the work) vs. those that employers hire for (ie. hiring managers).
+
+By contrasting our sets via different techniques and visualizations, we further refined our own findings and actually added a layer.
+
+Our general approach is outlined below:
+
+1. Pre-screen: after viewing the initial Kaggle (multipleChoiceResponses.csv) dataset and seeing that we would not be able to access this dataset via Github due to its size (39+ MB), we deemed “pre-screening” the dataset an essential step. We reviewed all 50 questions from the SurveySchema.csv file and marked those that we deemed applicable to providing insight for what the most valuable data science skills are. We then removed all inapplicable columns from the multipleChoiceResponses.csv. Once this dataset had been “pre-screened” it was uploaded to Github along with Jeff Hale’s general and software skill csv files (for later comparison).
+2. Acquire data: get the URL, read the .csv from Github (in its raw form), and put it in tabular form.
+3. Tidy and transform: our Kaggle dataset and put Jeff Hale’s in a form we can compare / pull from.
+4. Filter our dataset for another interpretation of “valuable” (education, income, experience level).
+5. Interpret our filtered v our filtered datasets and see what we can pull.
+6. Introduce Jeff Hale’s pretty data for comparison and see what we can lean on. Introduce general skills (something missing from our interpretation upto this point).
+7. Visualize and analyze.
+8. Conclude.
+
+<!--This is a work-in-progress. There are probably a number of points above that could be better worded, etc. I was just chug-a-lugging along today and wanted to jot out where we could bring our analysis ...-->
+
+### ACQUIRE DATA
+
+First we read our multiple choice dataset from the 2018 Kaggle survey.
+```{r}
+#Get URL, read .csv (in raw form) from github, and put into tabular form
+url <- getURL("https://raw.githubusercontent.com/Magnus-PS/CUNY-SPS-DATA-607/Project-3/pertinent_mc_resps.csv")
+data1 <- read.csv(text = url)
+mc_resps <- as_tibble(data1)
+
+#Show what we're working with:
+mc_resps
+
+#Display dimensions: 23860 rows x 43 columns
+dim(mc_resps)
+
+```
+
+Next we download our technical skills dataset (for later comparison).
+
+```{r}
+#Get URL, read .csv (in raw form) from github, and put into tabular form
+url2 <- getURL("https://raw.githubusercontent.com/Magnus-PS/CUNY-SPS-DATA-607/Project-3/ds_software.csv")
+data2 <- read.csv(text = url2)
+tech_skills <- as_tibble(data2)
+
+#Show what we're working with:
+tech_skills
+
+#Our output is 44 rows x 12 columns
+dim(tech_skills)
+
+```
+
+Finally, we download our general skills dataset (for later comparison).
+
+```{r}
+#Get URL, read .csv (in raw form) from github, and put into tabular form
+url3 <- getURL("https://raw.githubusercontent.com/Magnus-PS/CUNY-SPS-DATA-607/Project-3/ds_general.csv")
+data3 <- read.csv(text = url3)
+genl_skills <- as_tibble(data3)
+
+#Show what we're working with:
+genl_skills
+
+#Our output is 30 rows x 5 columns
+dim(genl_skills)
+
+```
+
+### TIDY & TRANSFORM
+
+<!--LEFT OFF HERE-->
+
+### ANALYZE
