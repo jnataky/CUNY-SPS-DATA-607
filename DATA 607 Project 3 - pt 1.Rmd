@@ -40,17 +40,28 @@ knitr::opts_chunk$set(eval = TRUE, results = FALSE, fig.show = "hide", message =
 
 We identified our sources of data as the following (cited APA-style below):
 
-1. Kaggle. (2018). 2018 Kaggle ML & DS Survey [Data file]. Retrieved from https://www.kaggle.com/kaggle/kaggle-survey-2018?select=multipleChoiceResponses.csv
+1. Kaggle. (2018). **2018 Kaggle ML & DS Survey** [Data file]. Retrieved from https://www.kaggle.com/kaggle/kaggle-survey-2018?select=multipleChoiceResponses.csv
 
-2. Jeff Hale. (2018). The Most in Demand Skills for Data Scientists [Data file]. Retrieved from https://www.kaggle.com/discdiver/the-most-in-demand-skills-for-data-scientists/log?select=ds_job_listing_software.csv
+2. Jeff Hale. (2018). **The Most in Demand Skills for Data Scientists** [Data file]. Retrieved from https://www.kaggle.com/discdiver/the-most-in-demand-skills-for-data-scientists/log?select=ds_job_listing_software.csv
 
-Our data (identified above) will be loaded in the following manner:
+For more background on Data Source #1:
 
-1. **Pre-screen:** after viewing the initial Kaggle (multipleChoiceResponses.csv) dataset and seeing that we would not be able to access this dataset via Github due to its size (39+ MB), we deemed “pre-screening” the dataset an essential step. We reviewed all 50 questions from the SurveySchema.csv file and marked those that we deemed applicable to providing insight for what the most valuable data science skills are. We then removed all inapplicable columns from the multipleChoiceResponses.csv. Once this dataset had been “pre-screened” it was uploaded to Github along with Jeff Hale’s general and software skill csv files (for later comparison).
+* The **2018 Kaggle ML & DS Survey** dataset had (3) .csv’s: the Survey Schema, Free Form Responses, and Multiple Choice Responses. 
 
-<!--If this step is unclear please let me (Magnus) know. I can flesh out more exactly what the criteria was for keeping v. deleting columns (questions) ...-->
+* *The Survey Schema* contained questions and explanations of response exemptions. While we do not plan on analyzing this .csv, it was useful pre-screening questions for pertinence. 
 
-2. **Acquire data via reading .csv's:** get the URL, read the .csv from Github (in its raw form), and put it in tabular form.
+* *The Free Form Responses* contained text answers submitted by survey takers when their response was not covered by multiple choice options. If we deem this set valuable / unique for purposes of analysis, we will draw on it. Otherwise, it may be disregarded as well.
+
+* *The Multiple Choice Responses* contain categorical variables submitted by respondents. This is where our “gold” lies and likely where the brunt of our data tidying, transforming, and analysis efforts will go. 
+
+
+### Data Loading
+
+Our data will be loaded in the following manner:
+
+1. **Pre-screen:** after viewing the initial Kaggle **2018 Kaggle ML & DS Survey** multiple choice response dataset and seeing that we would not be able to access this dataset via Github due to its size (39+ MB), we deemed “pre-screening” essential. We reviewed all 50 questions from the SurveySchema.csv file and kept only those applicable to the question at hand. Once this dataset had been “pre-screened” it was uploaded to Github along with Jeff Hale’s general and software skill csv files (for later comparison).
+
+2. **Acquire data via reading .csv's:** get the URL, read each .csv from Github (in its raw form), and put the data into tabular form before moving on to tidying and transforming.
 
 
 ### Entity-Relationship Diagram
@@ -60,6 +71,9 @@ To document the design of our database and provide a logical model for its norma
 * [2018 Kaggle ML & DS Survey - ERD](https://github.com/Magnus-PS/CUNY-SPS-DATA-607/blob/Project-3/2018%20Kaggle%20ML%20%26%20DS%20Survey%20-%20ERD.png)
 
 * [Most in Demand Skills - ERD](https://github.com/Magnus-PS/CUNY-SPS-DATA-607/blob/Project-3/Most%20in%20Demand%20Skills%20-%20ERD.png)
+
+
+### Explanation of Approach
 
 The Kaggle ML & DS Survey dataset is messier and will require more tidying and transforming. Our plan is to build a normalized table of questions and answers, and then "link" tables for questions and answers that relate to areas of interest (ie. general skills v software skills v "value filter"). 
 
