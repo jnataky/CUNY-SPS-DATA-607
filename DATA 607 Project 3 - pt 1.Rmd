@@ -55,13 +55,18 @@ Our data (identified above) will be loaded in the following manner:
 
 ### Entity-Relationship Diagram
 
-<style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
-</style>
-<div class = "blue">
+To document the design of our database and provide a logical model for its normalization, we created two separate ERD diagrams. To access these diagrams, **please click-through the ERDs listed below:**
 
-Create a logical model for your normalized database, and produce an Entity-Relationship (ER) diagram documenting your database design.
+* [2018 Kaggle ML & DS Survey - ERD](https://github.com/Magnus-PS/CUNY-SPS-DATA-607/blob/Project-3/2018%20Kaggle%20ML%20%26%20DS%20Survey%20-%20ERD.png)
 
-</div> \hfill\break
+* [Most in Demand Skills - ERD](https://github.com/Magnus-PS/CUNY-SPS-DATA-607/blob/Project-3/Most%20in%20Demand%20Skills%20-%20ERD.png)
 
-<!--LEFT OFF HERE...-->
+The Kaggle ML & DS Survey dataset is messier and will require more tidying and transforming. Our plan is to build a normalized table of questions and answers, and then "link" tables for questions and answers that relate to areas of interest (ie. general skills v software skills v "value filter"). 
+
+After gaining insight into software v general skills within this dataset, we can then utilize a "value filter" (via income, education, or experience level) to compare highest ranking skills for the general survey set against those filtered for higher income, experience, education or some combination of these variables.
+
+At this point, we then transition to comparing data science skills deemed as valuable in Kaggle's 2018 survey with the most in-demand skills for data scientists across multiple job sites. This "pro level" dataset, prepared by Jeff Hale, was pulled in to paint the picture of contrast (if there was any) between the skills data scientists deem as most valuable (ie. those doing the work) vs. those that employers hire for (ie. hiring managers).
+
+Through the transformation, analysis, and "value filtering" of our Kaggle ML & DS Survey dataset through its comparison to / pulling from a "pro level" dataset, our analyses and visualizations should provide multiple siftings and thus more valuable of insights regarding the question at hand:
+
+> What are the most valued data science skills?
