@@ -1,0 +1,112 @@
+---
+title: "DATA 607 Wk 7 Assignment"
+author: "Magnus Skonberg"
+date: "`r Sys.Date()`"
+output: 
+    html_document:
+        toc: true
+        toc_float: true
+        number_sections: false
+        theme: cerulean
+        highlight: tango
+        font-family: "Arial"
+---
+
+```{r load-packages, include=FALSE}
+library(XML)
+library(methods)
+library(rjson)
+library(RCurl)
+library(useful)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Background
+
+The purpose of this week's assignment was to familiarize ourselves with the different file structures (HTML v XML v JSON) and whether reading from these different file types leads to different output dataframes (or not).
+
+The basic approach I followed was:
+
+(1) Pick three books.
+(2) Create HTML, XML, and JSON files.
+(3) Load data into separate R data frames.
+(4) Compare resulting data frames.
+
+--------------------------------------------------------------------------------
+
+\clearpage
+
+
+### (1) Pick three books.
+
+For this assignment I chose three of my favorite titles on the topic of diet / nutrition. Fortunately, one of them had two authors :)
+
+I've experimented with more than a half dozen different diets / forms of eating and chose the three titles that most positively impacted my own eating habits:
+
+* **The 4 Hour Body** by Tim Ferriss
+* **The Primal Blueprint** by Mark Sisson
+* **It Starts With Food** by Dallas Hartwig and Melissa Hartwig
+
+
+### (2) Create HTML, XML, and JSON files.
+
+With these three titles in mind, I added the "Publisher" and "Year" (of publishing) attributes to "Title" and "Author", and sketched out / filled in  (with pen and paper) a table where each row was associated with a title and each column was associated with an attribute of this title.
+
+Being that I'm a newbie, I searched for some quick&easy tutorials (to compliment the text) for creating files in [HTML](https://www.w3schools.com/html/html_tables.asp) | [XML](https://www.youtube.com/watch?v=4wIrV_LZwus) | [JSON](https://www.learningcontainer.com/how-to-create-json-file/), applied each of their approaches using Notepad, saved the files in the proper form, and then uploaded these files to Github.
+
+
+### (3) Load data into separate R data frames.
+
+Once the files were on Github, I read from them (in raw form).
+
+```{r}
+#Load html file into dataframe
+html_file <- getURL("https://raw.githubusercontent.com/Magnus-PS/CUNY-SPS-DATA-607/Assignment-7/books.html")
+df_html <- readHTMLTable(html_file, as.data.frame = TRUE)
+
+#Load xml file into dataframe
+xml_file <- getURL("https://raw.githubusercontent.com/Magnus-PS/CUNY-SPS-DATA-607/Assignment-7/books.xml")
+df_xml <- xmlToDataFrame(xml_file)
+
+#Load json file into dataframe
+json_file <- getURL("https://raw.githubusercontent.com/Magnus-PS/CUNY-SPS-DATA-607/Assignment-7/books.json")
+json_data <- fromJSON(json_file)
+df_json <- as.data.frame(json_data)
+
+#Display the data frames corresponding to each data source
+df_html
+df_xml
+df_json
+
+```
+
+### (4) Compare resulting data frames.
+
+Yes, the three dataframes were identical.
+
+It took a little surfing through corresponding R documentation to find the proper function / approach, but it seems to have worked out. From html to xml to json, the resulting dataframes are the same. 
+
+*The organization of the input file mattered here. Since we were trying to compare whether input file types resulted in differing dataframes my aim was to hold the format of each input file the same. If there would have been variation here (ie. column headers, use of quotations, or general table layout) it would have led to differing outputs but that's a whole different conversation :)*
+
+```{r}
+#Programmatically confirm identical dataframes
+
+#html with xml
+compare.list(as.data.frame(df_html), as.data.frame(df_xml))
+
+#html with json
+compare.list(as.data.frame(df_html), as.data.frame(df_json))
+
+#json with xml
+compare.list(as.data.frame(df_json), as.data.frame(df_xml))
+
+```
+
+Programmatically confirmed :) I used the compare.list() function to verify whether the html data frame was identical to the xml data frame, html to json, and json to xml. As can be seen by the all TRUE values above, they are identical. 
+
+
+It seems that regardless of the form of the input file (html v xml v json), we can lean on R's internal functions to output equivalent data frames. Of course, more experience would be needed to *truly* confirm or conclude this, it's a promising start though.
