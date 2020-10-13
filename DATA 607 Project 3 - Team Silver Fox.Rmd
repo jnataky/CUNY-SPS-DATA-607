@@ -1,7 +1,7 @@
 ---
 title: "DATA 607 - Project 3"
 author: "Team Silver Fox"
-date: "10/8/2020"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
@@ -114,6 +114,45 @@ dim(genl_skills)
 
 ### TIDY & TRANSFORM
 
-<!--LEFT OFF HERE-->
+Create table of questions with Q_ID and Question as columns:
+
+```{r}
+#Extract all unique questions into questions table
+questions <- mc_resps[1,]
+colnames(questions)
+
+#Compress questions with multiple columns into one
+comp_qs <- questions[ -c(6:12,14:31,33,35,38:43) ]
+
+#Rename column titles for same format (ie. Q4)
+names(comp_qs)[names(comp_qs) == "Q11_Part_1"] <- "Q11"
+names(comp_qs)[names(comp_qs) == "Q16_Part_1"] <- "Q16"
+names(comp_qs)[names(comp_qs) == "Q34_Part_1"] <- "Q34"
+
+#Transpose for a long dataframe
+qs_long <- gather(comp_qs, "Q #", "Question", 1:10, factor_key=TRUE)
+
+#Replace the question number with a question ID (ie. Q4 --> 1)
+qs_long$Q_ID <- seq.int(nrow(qs_long)) 
+qs_long <- qs_long[ -c(1) ]
+qs_final <- qs_long[c("Q_ID", "Question")]
+qs_final
+
+```
+
+Once we have the table of Questions created, we've got to create the table of Answers *to later map between*.
+
+Create the table of Answers with A_ID, Answer, and Q_ID (for now) as columns. Later, we'll tie the A_ID and Q_ID together in a separate table but for now it will help keep track of what answer goes with what question:
+
+```{r}
+#Use regular expressions (ie. == Q4) to relabel questions / column headers with corresponding question ID
+
+#Sum each column for its corresponding count of unique answers ... mapped to the unique answer
+
+#Transpose for a long dataframe
+
+#in next code block ... make the connection between Q and in tables for "general skills", "technical skills" or "value filter" (refer to ERD)
+
+```
 
 ### ANALYZE
