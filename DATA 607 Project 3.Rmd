@@ -148,11 +148,15 @@ For this phase of the project, we added to the more ordinary of R functions with
 
 Our T&T process was heavy on the **2018 Kaggle ML & DS Survey** data and light for the **The Most in Demand Skills for Data Scientists** data, and took the following form: 
 
-We created a table of questions:
+
+#### KAGGLE SURVEY QUESTIONS
+
+We created a table of questions by extracting unique questions from the existing dataset, compressing repeated questions from multiple columns into one, renaming column titles for the same format (ie. Q4), transposing for a long dataframe, and replacing question numbers with question IDs.
+
+Thus transforming a 2 x 43 subsection of the dataset into a 10 x 2 table:
 ```{r}
 #Extract all unique questions into questions table
 questions <- mc_resps[1,]
-colnames(questions)
 #Compress questions with multiple columns into one
 comp_qs <- questions[ -c(6:12,14:31,33,35,38:43) ]
 #Rename column titles for same format (ie. Q4)
@@ -168,16 +172,26 @@ qs_final <- qs_long[c("Q_ID", "Question")]
 qs_final
 ```
 
-We created a table of Answers:
+#### KAGGLE SURVEY ANSWERS
+
+We then created a table of answers and further widdled our dataset down by removing all columns with "OTHER" labels or non-valuable entries and removing 1st row question statements to create an answers table that would be drawn from for tables, plots, and analysis later on.
+
+A small yet foundational step.
+
 ```{r}
 #Further widdle our dataset down: remove all columns with "OTHER" labels and non-valuable entries, remove 1st row (question statement)
 answers <- mc_resps[ -c(11:12,29:31,33,35,43) ]
 answers <- answers[-1,]
 ```
 
-Then we set out to draw counts from this table of Answers for Software Skills, General Skills, and the Value Filter ...
+Once we'd laid the foundation, we set out to draw counts from this table of answers for software skills, general skills, and the value filter ...
+
+#### KAGGLE SURVEY SOFTWARE SKILLS
 
 Below is the code for our creation of a table for unique variables related to SOFTWARE SKILLS from the **2018 Kaggle ML & DS Survey** data: 
+
+>Could edit intro text for remaining sections to flow better ...<
+
 ```{r}
 #Software language "regular basis" (Q16) count
 ##Gather associated answers into one column, cut out irrelevant columns, then count
@@ -196,19 +210,22 @@ rec <- rec[-2,] #remove empty row
 rec
 ```
 
-Below is the code for our creation of a table for unique variables related to GENERAL SKILLS from the **2018 Kaggle ML & DS Survey** data: 
+#### KAGGLE SURVEY GENERAL SKILLS
 
->can we use this data for comparison plots (in V&A section)?<
+Below is the code for our creation of a table for unique variables related to GENERAL SKILLS from the **2018 Kaggle ML & DS Survey** data: 
 
 ```{r}
 ###Tidying: could pull keywords out for better plotting, analysis, etc. Phrases are too long to plot
-#Machine learning (Q10) count
-answers %>% count(Q10, sort = TRUE)
-#Daily activities (Q11) count
+
+#Machine learning (Q10) count - very specific. Programming languages are a gateway to this direction.
+#ml_count <- answers %>% count(Q10, sort = TRUE)
+#ml_count
+
+#Daily activities (Q11) count - NOT USEFUL / UNIQUE
 ##Gather associated answers into one column, cut out irrelevant columns, then count
-all_daily <- gather(answers, key = "Q11_A_ID", value = "Q11_Answer", Q11_Part_1, Q11_Part_2, Q11_Part_3, Q11_Part_4, Q11_Part_5, Q11_Part_6)
-all_daily <- all_daily[ -c(1:29) ]
-all_daily %>% count(Q11_Answer, sort = TRUE)
+# all_daily <- gather(answers, key = "Q11_A_ID", value = "Q11_Answer", Q11_Part_1, Q11_Part_2, Q11_Part_3, Q11_Part_4, Q11_Part_5, Q11_Part_6)
+# all_daily <- all_daily[ -c(1:29) ]
+# all_daily %>% count(Q11_Answer, sort = TRUE)
 #Software activity (Q23) count
 sw <- answers %>% count(Q23, sort = TRUE)
 sw <- sw[-2,] #remove empty row
@@ -219,7 +236,7 @@ sw$Q23[sw$Q23 == "1% to 25% of my time"] <- "1%-25%"
 sw$Q23[sw$Q23 == "75% to 99% of my time"] <- "75%-99%"
 sw$Q23[sw$Q23 == "0% of my time"] <- "0%"
 sw$Q23[sw$Q23 == "100% of my time"] <- "100%"
-sw
+
 #Visualize software activity
 ggplot(sw, aes(x = Q23, y = n)) +
   geom_col() +
@@ -227,16 +244,18 @@ ggplot(sw, aes(x = Q23, y = n)) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"), plot.subtitle = element_text(hjust = 0.5)) +
   labs(caption = "2018") +
   scale_x_discrete(limits= c("0%", "1%-25%", "25%-49%","50%-74%", "75%-99%", "100%"))
-#% use time (Q34) count
+
+#% use time (Q34) count - NOT USEFUL / UNIQUE
 ##Gather associated answers into one column, cut out irrelevant columns, then count
-all_time <- gather(answers, key = "Q34_A_ID", value = "Q34_Answer", Q34_Part_1, Q34_Part_2, Q34_Part_3, Q34_Part_4, Q34_Part_5, Q34_Part_6)
-all_time <- all_time[ -c(1:29) ]
-all_time %>% count(Q34_Answer, sort = TRUE)
+# all_time <- gather(answers, key = "Q34_A_ID", value = "Q34_Answer", Q34_Part_1, Q34_Part_2, Q34_Part_3, Q34_Part_4, Q34_Part_5, Q34_Part_6)
+# all_time <- all_time[ -c(1:29) ]
+# all_time %>% count(Q34_Answer, sort = TRUE)
 ```
 
-Below is the code for our creation of a table for unique variables related to the VALUE FILTER from the **2018 Kaggle ML & DS Survey** data: 
 
->These can then be plotted, graphed, etc. or used to build a "filter" by considering only entries where, for instance, the respondent makes >=$100k ...<
+#### KAGGLE SURVEY VALUE FILTER
+
+Below is the code for our creation of a table for unique variables related to the VALUE FILTER from the **2018 Kaggle ML & DS Survey** data: 
 
 ```{r}
 #Education level count
@@ -263,10 +282,6 @@ mula_count <- answers %>% count(Q9, sort = TRUE)
 mula_count
 ```
 
->LEFT OFF HERE WITH WRITE UP<
-
-At this point we could visualize and analyze data for software v general skills. Then we could visualize and analyze data with a "value filter" applied and see if there's any contrast or insight gained by pulling from a subset of the original data (ie. high income DSs).
-
 As a "value filter", we filter for observations / respondents with (1) income >= $100,000 and (2) 10+ yrs experience. Our aim was to extract the "perspective" of those that are most experienced and highest income earning (regardless of educational background) to see whether their perspective is consistent with or different from that of the general survey populace:
 
 ```{r}
@@ -278,16 +293,19 @@ answers <- answers %>%
 filtered <-answers[ which(answers$value_filter =="yes"),]
 filtered
 
-#Plot visualization with "value filter" side-by-side with general data output for software and general skills
 ```
 
-Now that we have a value filter, we can apply it to our dataset. First we extract our counts of interest and then we plot (proportions) side-by-side with our general survey data.
+Later, we can apply this value filter to our dataset to see whether there are any observable differences between the general survey populace and those that have 10+ years experience and are earning $100k+ more per year. In short, *do those with more experience and market-value see things differently or similarly?*
+
+>LEFT OFF HERE WITH WRITE UP<
+
+At this point we could visualize and analyze data for software v general skills. Then we could visualize and analyze data with a "value filter" applied and see if there's any contrast or insight gained by pulling from a subset of the original data (ie. high income DSs).
 
 Below is the code for our creation of a table for unique variables related to SOFTWARE SKILLS from the **2018 Kaggle ML & DS Survey** data **with our value filter applied**: 
-```{r}
-#Software language "regular basis" (Q16) count
-##Gather associated answers into one column, cut out irrelevant columns, then count
 
+```{r}
+#Filtered "regular basis" software (Q16) count
+##Gather associated answers into one column, cut out irrelevant columns, then count
 #Note: observation count = 16 cols x 748 observations (in filtered)
 f_reg <- gather(filtered, key = "Q16_A_ID", value = "Q16_Answer", Q16_Part_1, Q16_Part_2, Q16_Part_3, Q16_Part_4, Q16_Part_5, Q16_Part_6, Q16_Part_7, Q16_Part_8, Q16_Part_9, Q16_Part_10, Q16_Part_11, Q16_Part_12, Q16_Part_13, Q16_Part_14, Q16_Part_15, Q16_Part_16)
 f_reg <- f_reg[ -c(1:20) ]
@@ -295,7 +313,7 @@ f_reg <- f_reg %>% count(Q16_Answer, sort = TRUE)%>% rename(f_reg = n)
 f_reg <- f_reg [-1,] #remove empty row
 f_reg
 
-#Software language "use most often" (Q17) count
+#Filtered "use most often" software (Q17) count
 f_mo <- filtered %>% count(Q17, sort = TRUE)%>% rename(f_mo = n)
 f_mo <- f_mo[-2,] #remove empty row
 f_mo
@@ -304,8 +322,22 @@ f_mo
 f_rec <- filtered %>% count(Q18, sort = TRUE)%>% rename(f_rec = n)
 f_rec <- f_rec[-3,] #remove empty row
 f_rec
+
+#Plot visualization with "value filter" side-by-side with general data output for software and general skills
 ```
 
+
+```{r}
+#Code for plot of general survey - general skills
+```
+
+```{r}
+#Code for plot of value filtered skills
+
+##Software
+
+##General
+```
 
 Tidy and transform: put Jeff Hale’s in a form we can compare / pull from. *And then* introduce Jeff Hale’s pretty data for comparison and see what we can lean on.
 
