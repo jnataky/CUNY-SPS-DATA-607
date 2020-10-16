@@ -49,7 +49,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ### BACKGROUND
 
 > What are the most valued data science skills?
-
 Answering this question formed the crux of our project. 
 
 We collaborated in understanding the question at hand, brainstorming an approach and where we might pull data from, deciding on a dataset and then acquiring, tidying & transforming, visualizing & analyzing this dataset before ultimately coming to the conclusion we'll present later.
@@ -101,7 +100,7 @@ Our general approach is outlined below:
 
 2. **Acquire data via reading .csv's:** get the URL, read each .csv from Github (in its raw form), and put the data into tabular form before moving on to tidying and transforming.
 3. **Tidy and transform:** by leaning on the dplyr() library and numerous useful R functions, we extracted a table of questions and a table of answers prior to extracting relevant keywords and counts (for later visualization). Our T&T process was heavy on the **2018 Kaggle ML & DS Survey** data and light for the **The Most in Demand Skills for Data Scientists** data. 
-4. **Visualize and analyze**: once our data was in a more "digestible" form we set out to generate insightful plots regarding the most valuable **software skills** and **general skills**. We plotted (and interpreted) the survey data, and then applied "value filter" to this data prior to introducing the plots for the **The Most in Demand Skills for Data Scientists** data. The purpose of this tiered approach was to sift for additional insight (if there was any to be found).
+4. **Visualize and analyze**: once our data was in a more "digestible" form we set out to generate insightful plots regarding the most valuable **software skills** and **general skills**. We plotted (and interpreted) the survey data, and then applied a "value filter" to this data prior to introducing the plots for the **The Most in Demand Skills for Data Scientists** data. The purpose of this tiered approach was to sift for additional insight (if there was any to be found).
 5. **Conclude**: after applying our tiered approach, we drew insight from the story our data told and came to a conclusion. More on this later :)
 
 --------------------------------------------------------------------------------
@@ -109,12 +108,12 @@ Our general approach is outlined below:
 ### ACQUIRE DATA
 
 First, we read our .csv's from Github (in their raw form) and then converted these datasets into tabular form. Our approach was to create and utilize a function to get corresponding URLs and read the csv files from these URLs. This was not the most line-efficient strategy but it was a unique way of extracting our csv's which some may deem a "rinse and repeat" process:
+
 ```{r}
 #Store URLs
 url1 <- "https://raw.githubusercontent.com/Magnus-PS/CUNY-SPS-DATA-607/Project-3/pertinent_mc_resps.csv"
 url2 <- "https://raw.githubusercontent.com/Magnus-PS/CUNY-SPS-DATA-607/Project-3/ds_software.csv"
 url3 <- "https://raw.githubusercontent.com/Magnus-PS/CUNY-SPS-DATA-607/Project-3/ds_general.csv"
-
 #Function to get URLs and read in corresponding .csv files
 url_to_dataframe_function <- function(x, y, z) {
   url <- getURL(url1)
@@ -128,19 +127,15 @@ url_to_dataframe_function <- function(x, y, z) {
   
   return(list(data1, data2, data3))
   }
-
 #Call to function (defined above)
 dataframes <- url_to_dataframe_function(url1, url2, url3)
-
 #Assignment of values
 for (i in seq(dataframes))
   assign(paste0("data", i), dataframes[[i]])
-
 #Conversion to dataframe and display for 2018 Kaggle ML & DS Survey multiple choice data and then The Most in Demand Skills for Data Scientists software and general skills
 mc_resps <- as_tibble(data1)
 tech_skills <- as_tibble(data2)
 genl_skills <- as_tibble(data3)
-
 ```
 
 --------------------------------------------------------------------------------
@@ -228,7 +223,7 @@ sw
 #Visualize software activity
 ggplot(sw, aes(x = Q23, y = n)) +
   geom_col() +
-  labs(title = "Data Science Survey", subtitle = "% of school / workday actively coding") +
+  labs(title = "Data Science Survey", subtitle = "% of school / workday actively coding", x = "", y = "") +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"), plot.subtitle = element_text(hjust = 0.5)) +
   labs(caption = "2018") +
   scale_x_discrete(limits= c("0%", "1%-25%", "25%-49%","50%-74%", "75%-99%", "100%"))
@@ -261,7 +256,7 @@ ggplot(exp_count, aes(x = Q8, y = n)) +
   geom_col() +
   labs(title = "Data Science Survey", subtitle = "Years of Experience") +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"), plot.subtitle = element_text(hjust = 0.5)) +
-  labs(caption = "2018") +
+  labs(caption = "2018", x = "", y = "") +
   scale_x_discrete(limits= c("", "0-1", "1-2","2-3", "3-4", "4-5", "5-10", "10-15", "15-20", "20-25", "25-30", "30 +"))
 ##Income count
 mula_count <- answers %>% count(Q9, sort = TRUE)
@@ -272,18 +267,45 @@ mula_count
 
 At this point we could visualize and analyze data for software v general skills. Then we could visualize and analyze data with a "value filter" applied and see if there's any contrast or insight gained by pulling from a subset of the original data (ie. high income DSs).
 
+As a "value filter", we filter for observations / respondents with (1) income >= $100,000 and (2) 10+ yrs experience. Our aim was to extract the "perspective" of those that are most experienced and highest income earning (regardless of educational background) to see whether their perspective is consistent with or different from that of the general survey populace:
 
 ```{r}
-#Apply a "value filter" to our Data Science Survey data
-#Filter observations for 10+ yrs experience and $100k+ income
-#Extract data where column entries meet our criteria for Q8 and Q9:
-#value_filter1 <- answers$Q9 == "100-125,000" 
-#value_filter1
-#ten_plus <- answers$Q9
-#hundredk_plus <-
-  
+##Filter data for (1) income >= $100,000, and 10+ yrs experience
+answers <- answers %>% 
+  mutate(value_filter = ifelse((answers$Q8 == "10-15" | answers$Q8 == "15-20" | answers$Q8 == "20-25" | answers$Q8 == "25-30" | answers$Q8 == "30 +") & (answers$Q9 == "100-125,000" | answers$Q9 == "125-150,000" | answers$Q9 == "150-200,000" | answers$Q9 == "200-250,000" | answers$Q9 == "250-300,000" | answers$Q9 == "300-400,000" | answers$Q9 == "400-500,000" | answers$Q9 == "500,000+"), "yes", "no"))
+
+#Thus, extracting 728 observations from more than 23,000
+filtered <-answers[ which(answers$value_filter =="yes"),]
+filtered
+
 #Plot visualization with "value filter" side-by-side with general data output for software and general skills
 ```
+
+Now that we have a value filter, we can apply it to our dataset. First we extract our counts of interest and then we plot (proportions) side-by-side with our general survey data.
+
+Below is the code for our creation of a table for unique variables related to SOFTWARE SKILLS from the **2018 Kaggle ML & DS Survey** data **with our value filter applied**: 
+```{r}
+#Software language "regular basis" (Q16) count
+##Gather associated answers into one column, cut out irrelevant columns, then count
+
+#Note: observation count = 16 cols x 748 observations (in filtered)
+f_reg <- gather(filtered, key = "Q16_A_ID", value = "Q16_Answer", Q16_Part_1, Q16_Part_2, Q16_Part_3, Q16_Part_4, Q16_Part_5, Q16_Part_6, Q16_Part_7, Q16_Part_8, Q16_Part_9, Q16_Part_10, Q16_Part_11, Q16_Part_12, Q16_Part_13, Q16_Part_14, Q16_Part_15, Q16_Part_16)
+f_reg <- f_reg[ -c(1:20) ]
+f_reg <- f_reg %>% count(Q16_Answer, sort = TRUE)%>% rename(f_reg = n)
+f_reg <- f_reg [-1,] #remove empty row
+f_reg
+
+#Software language "use most often" (Q17) count
+f_mo <- filtered %>% count(Q17, sort = TRUE)%>% rename(f_mo = n)
+f_mo <- f_mo[-2,] #remove empty row
+f_mo
+
+#Software language "recommend to aspiring DSs" (Q18) count
+f_rec <- filtered %>% count(Q18, sort = TRUE)%>% rename(f_rec = n)
+f_rec <- f_rec[-3,] #remove empty row
+f_rec
+```
+
 
 Tidy and transform: put Jeff Hale’s in a form we can compare / pull from. *And then* introduce Jeff Hale’s pretty data for comparison and see what we can lean on.
 
@@ -330,8 +352,12 @@ keyword_comp <- tech_skills_final %>%
 
 
 ```{r}
-  ggplot(keyword_comp) +
-  geom_bar(aes(x = Keyword , y = pct, fill = source), stat = "identity", position = "dodge", width = 1)
+keyword_comp%>%
+  filter(source == "total" | source == "rec")%>%
+  ggplot() +
+  geom_bar(aes(x = Keyword , y = pct, fill = source), stat = "identity", position = "dodge", width = 1)+
+  scale_fill_manual(labels = c("Data Scientist", "Job Board"), values = c("blue", "green")) +
+  labs( title = "Date Scientist Recomendations VS Job Board", x = "Software", y = "Share of Mentions", fill = "Source")
 ```
 
 Plot for value filter (v. regular survey data)
