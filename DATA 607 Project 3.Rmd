@@ -149,7 +149,7 @@ For this phase of the project, we added to the more ordinary of R functions with
 Our T&T process was heavy on the **2018 Kaggle ML & DS Survey** data and light for the **The Most in Demand Skills for Data Scientists** data, and took the following form: 
 
 
-#### KAGGLE SURVEY QUESTIONS
+#### SURVEY QUESTIONS & ANSWERS
 
 We created a table of questions by extracting unique questions from the existing dataset, compressing repeated questions from multiple columns into one, renaming column titles for the same format (ie. Q4), transposing for a long dataframe, and replacing question numbers with question IDs.
 
@@ -169,9 +169,9 @@ qs_long <- gather(comp_qs, "Q #", "Question", 1:10, factor_key=TRUE)
 qs_long$Q_ID <- seq.int(nrow(qs_long)) 
 qs_long <- qs_long[ -c(1) ]
 qs_final <- qs_long[c("Q_ID", "Question")]
+qs_final
 ```
-
-#### KAGGLE SURVEY ANSWERS
+The table above notes the 10 questions we considered in exploring the **2018 Kaggle ML & DS Survey**. While we did not directly tie these questions in with our visualizations (later on), we did refer to these questions for keywords to ensure a consistent interpretation of the data at hand.
 
 We then created a table of answers and further widdled our dataset down by removing all columns with "OTHER" labels or non-valuable entries and removing 1st row question statements to create an answers table that would be drawn from for tables, plots, and analysis later on.
 
@@ -185,37 +185,32 @@ answers <- answers[-1,]
 
 Once we'd laid the foundation, we set out to draw counts from this table of answers for software skills, general skills, and the value filter ...
 
-#### KAGGLE SURVEY SOFTWARE SKILLS
+#### SURVEY SOFTWARE SKILLS
 
-Below is the code for our creation of a table for unique variables related to SOFTWARE SKILLS from the **2018 Kaggle ML & DS Survey** data: 
-
->Could edit intro text for remaining sections to flow better ...<
+Next, we explored the **2018 Kaggle ML & DS Survey** dataset further and set out to create tables of unique variables related to SOFTWARE SKILLS: 
 
 ```{r}
 #Software language "regular basis" (Q16) count
 ##Gather associated answers into one column, cut out irrelevant columns, then count
 reg <- gather(answers, key = "Q16_A_ID", value = "Q16_Answer", Q16_Part_1, Q16_Part_2, Q16_Part_3, Q16_Part_4, Q16_Part_5, Q16_Part_6, Q16_Part_7, Q16_Part_8, Q16_Part_9, Q16_Part_10, Q16_Part_11, Q16_Part_12, Q16_Part_13, Q16_Part_14, Q16_Part_15, Q16_Part_16)
 reg <- reg[ -c(1:19) ]
-reg <- reg %>% count(Q16_Answer, sort = TRUE)%>% rename(reg = n)
+reg <- reg %>% count(Q16_Answer, sort = TRUE)%>% rename(reg = "n")
 reg <- reg [-1,] #remove empty row
 
 #Software language "use most often" (Q17) count
-mo <- answers %>% count(Q17, sort = TRUE)%>% rename(mo = n)
+mo <- answers %>% count(Q17, sort = TRUE)%>% rename(mo = "n")
 mo <- mo[-1,] #remove empty row
 
 #Software language "recommend to aspiring DSs" (Q18) count
-rec <- answers %>% count(Q18, sort = TRUE)%>% rename(rec = n)
+rec <- answers %>% count(Q18, sort = TRUE)%>% rename(rec = "n")
 rec <- rec[-2,] #remove empty row
-
 ```
 
-#### KAGGLE SURVEY GENERAL SKILLS
+#### SURVEY GENERAL SKILLS
 
-Below is the code for our creation of a table for unique variables related to GENERAL SKILLS from the **2018 Kaggle ML & DS Survey** data: 
+We then applie the same methodology to create a table for unique variables for GENERAL SKILLS from the **2018 Kaggle ML & DS Survey** data: 
 
 ```{r}
-###Tidying: could pull keywords out for better plotting, analysis, etc. Phrases are too long to plot
-
 #Machine learning (Q10) count - very specific. Programming languages are a gateway to this direction.
 #ml_count <- answers %>% count(Q10, sort = TRUE)
 #ml_count
@@ -225,6 +220,7 @@ Below is the code for our creation of a table for unique variables related to GE
 # all_daily <- gather(answers, key = "Q11_A_ID", value = "Q11_Answer", Q11_Part_1, Q11_Part_2, Q11_Part_3, Q11_Part_4, Q11_Part_5, Q11_Part_6)
 # all_daily <- all_daily[ -c(1:29) ]
 # all_daily %>% count(Q11_Answer, sort = TRUE)
+
 #Software activity (Q23) count
 sw <- answers %>% count(Q23, sort = TRUE)
 sw <- sw[-2,] #remove empty row
@@ -251,13 +247,18 @@ ggplot(sw, aes(x = Q23, y = n)) +
 # all_time %>% count(Q34_Answer, sort = TRUE)
 ```
 
-#### KAGGLE SURVEY VALUE FILTER
+We did not deem this GENERAL SKILL data as useful as originally intended and thus had a stronger case for leaning on Jeff Hale's dataset for this particular area.
+
+We'll expand on the most valuable of software and general skills (later on), but for now **it's worth noting the importance of coding for a data scientist.** As we can see from the above percentages, it plays a large part in a Data Scientists day-to-day life.
+
+#### SURVEY VALUE FILTER
 
 Below is the code for our creation of a table for unique variables related to the VALUE FILTER from the **2018 Kaggle ML & DS Survey** data: 
 
 ```{r}
 #Education level count
 answers %>% count(Q4, sort = TRUE)
+
 ##Experience count
 answers$Q8 <- as.character(answers$Q8)
 answers$Q8[answers$Q8 == "10-May"] <- "5-10"
@@ -266,8 +267,10 @@ answers$Q8[answers$Q8 == "4-Mar"] <- "3-4"
 answers$Q8[answers$Q8 == "2-Jan"] <- "1-2"
 answers$Q8[answers$Q8 == "3-Feb"] <- "2-3"
 answers$Q8[answers$Q8 == "5-Apr"] <- "4-5"
+
 #Storage of corresponding observation counts in "a"
 exp_count <- answers %>% count(Q8, sort = TRUE)
+
 #Visualization of years experience count
 ggplot(exp_count, aes(x = Q8, y = n)) +
   geom_col(fill = "#00abff") +
@@ -275,12 +278,103 @@ ggplot(exp_count, aes(x = Q8, y = n)) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"), plot.subtitle = element_text(hjust = 0.5)) +
   labs(caption = "2018", x = "", y = "") +
   scale_x_discrete(limits= c("", "0-1", "1-2","2-3", "3-4", "4-5", "5-10", "10-15", "15-20", "20-25", "25-30", "30 +"))
+
 ##Income count
 mula_count <- answers %>% count(Q9, sort = TRUE)
 mula_count
 ```
 
-As a "value filter", we filter for observations / respondents with (1) income >= $100,000 and (2) 10+ yrs experience. Our aim was to extract the "perspective" of those that are most experienced and highest income earning (regardless of educational background) to see whether their perspective is consistent with or different from that of the general survey populace:
+From the above tables and chart we can note the different counts for differing educational, experience, and income levels. In particular, we thought the lack of experienced Data Scientists worth emphasizing with our plot. From the *Data Science Survey: Years of Experience* plot we see there are relatively few Data Scientists with 5+ years experience and far fewer with 10+ years experience. 
+
+**It's a young field that's in the midst of defining itself.**
+
+With a clearer understanding of years experience within our dataset, we then set out to explore the education level of our respondents and how their level of education may or may not be related to their income level:
+
+```{r}
+
+answers$Q9 <- as.character(answers$Q9)
+
+income_by_education <- answers %>%
+mutate(approx_avg_income = ifelse(Q9 == "0-10,000", "5000",
+ifelse(Q9 == "10-20,000", "15000",
+ifelse(Q9 == "20-30,000", "25000",
+ifelse(Q9 == "30-40,000", "35000",
+ifelse(Q9 == "40-50,000", "45000",
+ifelse(Q9 == "50-60,000", "55000",
+ifelse(Q9 == "60-70,000", "65000",
+ifelse(Q9 == "70-80,000", "75000",
+ifelse(Q9 == "80-90,000", "85000",
+ifelse(Q9 == "90-100,000", "95000",
+ifelse(Q9 == "100-125,000", "112500",
+ifelse(Q9 == "125-150,000", "137500",
+ifelse(Q9 == "150-200,000", "175000",
+ifelse(Q9 == "200-250,000","225000",
+ifelse(Q9 == "250-300,000", "275000",
+ifelse(Q9 == "300-400,000", "350000",
+ifelse(Q9 == "400-500,000", "450000",
+ifelse(Q9 == "500,000+", "500000", NA)))))))))))))))))))
+
+# unique(income_by_education$Q4)
+
+income_by_education <- income_by_education %>%
+mutate(Q4 = ifelse(Q4 == "Bachelor’s degree", "Bachelors",
+ifelse(Q4 == "Doctoral degree", "Doctoral",
+ifelse(Q4 == "Master’s degree", "Masters",
+ifelse(Q4 == "Professional degree", "Professional",
+ifelse(Q4 == "No formal education past high school", "High School", ifelse(Q4 == "Some college/university study without earning a bachelor’s degree", "Some college",
+ifelse(Q4 == "I prefer not to answer", "No answer", NA))))))))
+
+income_by_education_reporting <- income_by_education %>%
+select(Q4, approx_avg_income) %>%
+drop_na()
+
+# unique(income_by_education_reporting$Q4)
+
+income_by_education_reporting$approx_avg_income <- as.numeric(income_by_education_reporting$approx_avg_income)
+
+income_by_education_reporting <- subset(income_by_education_reporting, !is.na(Q4))
+
+income_by_education_reporting_graph <- income_by_education_reporting %>%
+group_by(Q4) %>%
+summarize(approx_avg_income = mean(approx_avg_income))
+
+income_by_education_reporting_graph_w_numbers <- income_by_education_reporting %>%
+  mutate(education_years = case_when(Q4 == "Bachelors" ~ 8, Q4 == "Doctoral" ~ 12, Q4 == "High School" ~ 4, Q4 == "Masters" ~ 10, Q4 == "No Answer" ~ 0, Q4 == "Professional" ~ 11, Q4 == "Some college" ~ 6))
+
+income_by_education_reporting_graph_w_numbers <- income_by_education_reporting_graph_w_numbers %>%
+  filter(Q4 != "No answer")
+
+# ggplot(income_by_education_reporting_graph, aes(x = Q4, y = approx_avg_income)) +
+# geom_col() +
+# labs(title = "Data Science Survey", subtitle = "Average Income by Education") +
+# theme(plot.title = element_text(hjust = 0.5, face = "bold"), plot.subtitle = element_text(hjust = 0.5)) +
+# labs(caption = "2018") +
+# theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(income_by_education_reporting_graph_w_numbers, aes(x = education_years, y = approx_avg_income)) +
+geom_point(position = "jitter") +
+labs(title = "Data Science Survey", subtitle = "Income ~ Education") +
+theme(plot.title = element_text(hjust = 0.5, face = "bold"), plot.subtitle = element_text(hjust = 0.5)) +
+labs(caption = "2018") +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+geom_smooth(method = "lm") +
+  ylim(0,150000) + 
+  xlab("Education Years After High School") +
+  ylab("Income")
+
+method <- lm(approx_avg_income ~ education_years, income_by_education_reporting_graph_w_numbers)
+#summary(method)
+method
+
+# p-value of< 2.2e-16 means there is an effect of education years on income
+# the r-squared is very small 0.01497 so education doesn't explain much of 
+# the overall variability in income
+```
+What we found, and what can be seen above is that there is a positive relationship between education and income, as painted by the *blue line* fit to the plotted data. Thus, the higher a Data Scientist's level of education, the higher their potential earnings.
+
+With a clearer picture of experience, education, and income levels, we then set out to build our "value filter". We elected to filter observations / respondents with (1) income >= $100,000 and (2) 10+ yrs experience. 
+
+Our aim was to extract the "perspective" of those that are most experienced and highest income earning (regardless of educational background) to see whether their perspective was consistent with or different from that of the general survey populace:
 
 ```{r}
 ##Filter data for (1) income >= $100,000, and 10+ yrs experience
@@ -292,13 +386,9 @@ filtered <-answers[ which(answers$value_filter =="yes"),]
 
 ```
 
-Later, we can apply this value filter to our dataset to see whether there are any observable differences between the general survey populace and those that have 10+ years experience and are earning $100k+ more per year. In short, *do those with more experience and market-value see things differently or similarly?*
+We then applied our value filter to see whether there were any observable differences between the general survey populace and those that have 10+ years experience and are earning $100k+ more per year. In short, *do those with more experience and market-value see things differently or similarly?*
 
->LEFT OFF HERE WITH WRITE UP<
-
-At this point we could visualize and analyze data for software v general skills. Then we could visualize and analyze data with a "value filter" applied and see if there's any contrast or insight gained by pulling from a subset of the original data (ie. high income DSs).
-
-Below is the code for our creation of a table for unique variables related to SOFTWARE SKILLS from the **2018 Kaggle ML & DS Survey** data **with our value filter applied**: 
+Below are the tables related to SOFTWARE SKILLS from the **2018 Kaggle ML & DS Survey** data **with our value filter applied**: 
 
 ```{r}
 #Filtered "regular basis" software (Q16) count
@@ -308,26 +398,35 @@ f_reg <- gather(filtered, key = "Q16_A_ID", value = "Q16_Answer", Q16_Part_1, Q1
 f_reg <- f_reg[ -c(1:20) ]
 f_reg <- f_reg %>% count(Q16_Answer, sort = TRUE)%>% rename(f_reg = n)
 f_reg <- f_reg [-1,] #remove empty row
+f_reg
 
 #Filtered "use most often" software (Q17) count
 f_mo <- filtered %>% count(Q17, sort = TRUE)%>% rename(f_mo = n)
 f_mo <- f_mo[-2,] #remove empty row
+f_mo
 
 #Software language "recommend to aspiring DSs" (Q18) count
 f_rec <- filtered %>% count(Q18, sort = TRUE)%>% rename(f_rec = n)
 f_rec <- f_rec[-3,] #remove empty row
+f_rec
 
-#Plot visualization with "value filter" side-by-side with general data output for software and general skills
 ```
-Discuss insight gained from value filter: Python is still #1 just the proportions changed and with a subset of the group (for Q16), SQL rather than R was #2.
 
+We can extend a number of observations from these "value filtered" tables to those of the earlier general data set:
 
-Tidy and transform: put Jeff Hale’s in a form we can compare / pull from. *And then* introduce Jeff Hale’s pretty data for comparison and see what we can lean on.
+* Python has the highest rating for regular / most often (Q16, Q17) use as well as the highest level of recommendation to aspiring data scientists (Q18). 
+* SQL is #2 for regular use (Q16) and R is #2 for most often and highest level of recommendation to aspiring data scientists (Q18)
+* The top 3 languages were consistently Python, R, and SQL.
 
-Gather counts for unique variables related to SOFTWARE SKILLS for Jeff Hale's dataset:
+The disproportionate level of Python use and recommendation is explored in more detail later. Prior to moving on to software and general skills though, we applied a second value filter to our general survey data to explore the effect of education on income:
+
+--------------------------------------------------------------------------------
+
+#### JOB BOARD SKILLS
+
+We put Jeff Hale’s in a form to more easily compare to / pull from by gathering counts for unique variables related to SOFTWARE SKILLS and then GENERAL SKILLS:
 ```{r}
-#Explore results for each job board
-#Isolate and format relevant data for tech skills
+#Consolidate job board data (ie. LinkedIn v Indeed) for SOFTWARE SKILLS
 tech_skills[ , c(2,3,4,5)]  <- apply(tech_skills[ , c(2,3,4,5)], 2, function(x) as.numeric(str_remove(x, ",")))
 tech_skills_final <- tech_skills%>%
   filter(Keyword != "Total", LinkedIn.. != "")%>%
@@ -335,12 +434,8 @@ tech_skills_final <- tech_skills%>%
   mutate(total = rowSums(. [2:5]))%>%
   arrange(desc(total))
 ##Then sum all rows to get all job search results per keyword and re-plot
-```
 
-Gather counts for unique variables related to GENERAL SKILLS for Jeff Hale's dataset:
-```{r}
-#Explore results for each job board
-#Isolate and format relevant data for general skills
+#Consolidate job board data (ie. LinkedIn v Indeed) for GENERAL SKILLS
 genl_skills[ , c(2,3,4,5)]  <- apply(genl_skills[ , c(2,3,4,5)], 2, function(x) as.numeric(str_remove(x, ",")))
 genl_skills_final <- genl_skills%>%
   select(Keyword:Monster)%>%
@@ -356,15 +451,28 @@ genl_skills_final <- genl_skills_final %>% filter(total > 3000)
 
 ### VISUALIZE & ANALYZE
 
-Plot SOFTWARE SKILLS survey results with and without the value filter, side-by-side.
+While the tables and plots upto this point helped tell the story of our exploration of the **2018 Kaggle ML & DS Survey** and **The Most in Demand Skills for Data Scientists** datasets, the plots that follow directly answer the question at hand.
+
+First, we set out to gain insight as to what the most valuable GENERAL SKILLS might be. We pulled on Jeff Hale's data set and plot for total counts (across job boards) for the most common key words. We then plotted for the Top 10 General Skills:
 
 ```{r}
-#Plot value filtered v general results side by side (ie. reg v. f_reg) as proportions
-##Can we / Should we apply what Mustafa did for tech_skills here?
-##The only real insight is a difference in proportions and SQL as #2 for Q16
+#Plot for general skills from Jeff Hale's dataset
+
+ggplot(genl_skills_final) +
+  geom_bar(aes(x = Keyword , y = total, fill = Keyword), stat = "identity", position = "dodge", width = 1) + coord_flip() +
+  theme(legend.position = "none") +
+  labs( title = "Job Board General Skills Mentions", x = "", y = "", fill = "Source")
+
 ```
 
-Join the data frames to examine the job board patterns adjacent to the data scientist survey results.
+The top 10 skills include: *visualization, statistics, NLP composite, mathematics, machine learning, deep learning, computer science, communication, analysis, and AI composite.* This subset of skills includes some soft skills (ie. communication) but mostly technical skills (ie. statistics). 
+
+When we look at the top 3 "general" skills (analysis, machine learning, and statistics), they're all arguably technical. Thus, it would seem the most valuable skills for a Data Scientist would be a very strong technical toolbox with the ability to glean the "golden nuggets" and telling visualizations from the data at hand and relay them to the rest of their team / management / the customer / etc.
+
+From the plot above, we get the idea that the role is highly technical and from the earlier plot of % daily activities coding, we saw that a large portion of a Data Scientist's day is spent coding. Thus, it's very valuable to know how to program. And with that in mind, there are certain programming languages that are more valuable and applicable in the realm of Data Science than others.
+
+So with our next visualization, we set out to gain insight into what the most valuable SOFTWARE SKILLS might be. We pulled on Jeff Hale's data set and plot for total counts (across job boards) for the most common key words. We then plotted for the Top 8 Software Skills:
+
 ```{r}
 keyword_comp <- tech_skills_final %>%
   inner_join(rec,c("Keyword" = "Q18"))%>%
@@ -373,43 +481,62 @@ keyword_comp <- tech_skills_final %>%
   pivot_longer(cols = LinkedIn:mo, names_to = "source" , values_to = "frequency" )%>% 
       group_by(source) %>%
       mutate(pct  = frequency / sum(frequency))
-```
 
-
-```{r}
 keyword_comp%>%
   filter(source == "total" | source == "rec")%>%
   ggplot() +
   geom_bar(aes(x = Keyword , y = pct, fill = source), stat = "identity", position = "dodge", width = 1)+
-  scale_fill_manual(labels = c("Data Scientist", "Job Board"), values = c("blue", "green")) +
-  labs( title = "Date Scientist Recomendations VS Job Board", x = "Software", y = "Share of Mentions", fill = "Source")
+  scale_fill_manual(labels = c("Data Scientist", "Job Board"), values = c("#9999CC", "#66CC99")) +
+  labs( title = "Data Scientist Recommendations vs. Job Board", x = "Software Language", y = "Proportion of Mentions", fill = "Source")+
+  coord_flip()
+
 ```
-Python > R > SQL. **Top skills being Machine Learning, Analysis, Statistics.**
 
+The top 8 languages include: *SQL, Scala, SAS, R, Python, Javascript, Java, and C++*. And where the bottom 5 languages had varying proportion of mentions (depending on whether it was drawn from the Job Board data or from the Survey data), **the top 3 software skills were consistently: Python > R > SQL.**
 
-Plot for value filter (v. regular survey data)
+What's interesting to note is the discrepancy between what Data Scientists perceive as most important (the languages they most recommend) v. what the frequency of corresponding software skills as keywords in job postings. 
 
-Examine job board patterns for general skills.
+To expand on this point ... if we were to look at the survey data, we'd see that nearly 80% of respondents recommend Python, whereas this value is just below 30% when we look at corresponding job board proportion of mentions. Thus, the perceived value of Python may be much greater than its actual value, whereas the perceived value of languages like R and SQL may be lower than their actual value.
+
+Prior to concluding our analysis, we deemed it worthwhile to re-visualize the aforementioned plot *without Python* to more clearly see representative proportions of the rest of the languages:
 
 ```{r}
-#Plot for general skills from Jeff Hale's dataset
-
-ggplot(genl_skills_final) +
-  geom_bar(aes(x = Keyword , y = total, fill = Keyword), stat = "identity", position = "dodge", width = 1) + coord_flip()
-
+keyword_comp%>%
+  filter(source == "total" | source == "rec", Keyword != "Python")%>%
+  ggplot() +
+  geom_bar(aes(x = Keyword , y = pct, fill = source), stat = "identity", position = "dodge", width = 1)+
+  scale_fill_manual(labels = c("Data Scientist", "Job Board"), values = c("#9999CC", "#66CC99")) +
+  labs( title = "Data Scientist Recommendations vs Job Board", subtitle = "(Without Python)", x = "Software Language", y = "Proportion of Mentions", fill = "Source") +
+  coord_flip()
 ```
+What we see from the plot above is that the 7 "runner-up" most popular languages all carry a disproportionate Proportion of Mentions when compared to the associated survey bar.
 
-Visualization, Statistics, Mathematics, Machine Learning, Computer Science, Communication, Analysis*. **Top skills being Machine Learning, Analysis, Statistics.**
+We see that R and SQL run 1-2 for their popularity in share of mentions (which we knew before), but then the picture of the next tier of languages clarifies quite a bit: *Java, SAS, Scala, C++, and Javascript* are all worth "honorable mention". Javascript may be more niche with less than 2.5% Proportion of Mentions on job postings but Java is nearly 10% which is well worth considering if you're an aspiring Data Scientist or a seasoned Data Scientist looking to sharpen your arsenal. 
 
 --------------------------------------------------------------------------------
 
 ### CONCLUDE
 
-Interpret the visualizations and analysis to draw a clear, concise response to 
+We return to the question at hand:
+
 > What are the most valued data science skills?
 
-Discussion of General Survey Results --> Value Filter --> Jeff Hale's Set
+In "twice sifting" our data and adapting our approach based on insights gained, we pulled from both the **2018 Kaggle ML & DS Survey** and **The Most in Demand Skills for Data Scientists** data, to determine that the most valued data science skills cover two realms: general skills and software skills.
 
-Discussion of how our approach changed.
+The analysis portion goes more in-depth regarding these realms. For sake of clarity and conciseness, we’ll take an Olympic medal approach (think: gold, silver, bronze) and note *only* the top three in each respective category below.
 
-Discussion of major insights gained. What is the answer to the Q?
+* **General skills**: analysis > machine learning > statistics.
+
+* **Software skills**: Python > R > SQL.
+
+Although more comprehensive or recent of data could be used to verify, our multiple sifts and plots of the data confirm not only the skills listed above but the fact that there is a discrepancy between perceived and real value. 
+
+When we take into account the proportion of mentions for Job Board key words v. survey responses, it seems that Data Scientists over-value the importance of Python while under-valuing the importance of R and SQL. Thus, as a Data Scientist, there may be opportunity in placing more value on these languages.
+
+--------------------------------------------------------------------------------
+
+### NOTE FROM THE TEAM
+
+Our team attempted to collaborate remotely through duration of this project, and although it was a valiant attempt, one take-away we all agreed upon was the importance of using better real-time collaborative tools (ie. repl.it or git) rather than copy-pasting code between Githubs and/or Slack-and-Github. 
+
+After leaning too heavily on manual entry (and thus unnecessarily losing time and amplifing the possibility of error), our motivation for incorporating these tools and methods into future projects is clear as day :)
