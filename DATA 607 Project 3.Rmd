@@ -169,7 +169,6 @@ qs_long <- gather(comp_qs, "Q #", "Question", 1:10, factor_key=TRUE)
 qs_long$Q_ID <- seq.int(nrow(qs_long)) 
 qs_long <- qs_long[ -c(1) ]
 qs_final <- qs_long[c("Q_ID", "Question")]
-qs_final
 ```
 
 #### KAGGLE SURVEY ANSWERS
@@ -199,15 +198,15 @@ reg <- gather(answers, key = "Q16_A_ID", value = "Q16_Answer", Q16_Part_1, Q16_P
 reg <- reg[ -c(1:19) ]
 reg <- reg %>% count(Q16_Answer, sort = TRUE)%>% rename(reg = n)
 reg <- reg [-1,] #remove empty row
-reg
+
 #Software language "use most often" (Q17) count
 mo <- answers %>% count(Q17, sort = TRUE)%>% rename(mo = n)
 mo <- mo[-1,] #remove empty row
-mo
+
 #Software language "recommend to aspiring DSs" (Q18) count
 rec <- answers %>% count(Q18, sort = TRUE)%>% rename(rec = n)
 rec <- rec[-2,] #remove empty row
-rec
+
 ```
 
 #### KAGGLE SURVEY GENERAL SKILLS
@@ -239,8 +238,8 @@ sw$Q23[sw$Q23 == "100% of my time"] <- "100%"
 
 #Visualize software activity
 ggplot(sw, aes(x = Q23, y = n)) +
-  geom_col() +
-  labs(title = "Data Science Survey", subtitle = "% of school / workday actively coding", x = "", y = "") +
+  geom_col(fill = "#00abff") +
+  labs(title = "Data Science Survey", subtitle = "% of school / workday actively coding", x = "", y = "n") +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"), plot.subtitle = element_text(hjust = 0.5)) +
   labs(caption = "2018") +
   scale_x_discrete(limits= c("0%", "1%-25%", "25%-49%","50%-74%", "75%-99%", "100%"))
@@ -251,7 +250,6 @@ ggplot(sw, aes(x = Q23, y = n)) +
 # all_time <- all_time[ -c(1:29) ]
 # all_time %>% count(Q34_Answer, sort = TRUE)
 ```
-
 
 #### KAGGLE SURVEY VALUE FILTER
 
@@ -272,7 +270,7 @@ answers$Q8[answers$Q8 == "5-Apr"] <- "4-5"
 exp_count <- answers %>% count(Q8, sort = TRUE)
 #Visualization of years experience count
 ggplot(exp_count, aes(x = Q8, y = n)) +
-  geom_col() +
+  geom_col(fill = "#00abff") +
   labs(title = "Data Science Survey", subtitle = "Years of Experience") +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"), plot.subtitle = element_text(hjust = 0.5)) +
   labs(caption = "2018", x = "", y = "") +
@@ -291,7 +289,6 @@ answers <- answers %>%
 
 #Thus, extracting 728 observations from more than 23,000
 filtered <-answers[ which(answers$value_filter =="yes"),]
-filtered
 
 ```
 
@@ -311,33 +308,19 @@ f_reg <- gather(filtered, key = "Q16_A_ID", value = "Q16_Answer", Q16_Part_1, Q1
 f_reg <- f_reg[ -c(1:20) ]
 f_reg <- f_reg %>% count(Q16_Answer, sort = TRUE)%>% rename(f_reg = n)
 f_reg <- f_reg [-1,] #remove empty row
-f_reg
 
 #Filtered "use most often" software (Q17) count
 f_mo <- filtered %>% count(Q17, sort = TRUE)%>% rename(f_mo = n)
 f_mo <- f_mo[-2,] #remove empty row
-f_mo
 
 #Software language "recommend to aspiring DSs" (Q18) count
 f_rec <- filtered %>% count(Q18, sort = TRUE)%>% rename(f_rec = n)
 f_rec <- f_rec[-3,] #remove empty row
-f_rec
 
 #Plot visualization with "value filter" side-by-side with general data output for software and general skills
 ```
+Discuss insight gained from value filter: Python is still #1 just the proportions changed and with a subset of the group (for Q16), SQL rather than R was #2.
 
-
-```{r}
-#Code for plot of general survey - general skills
-```
-
-```{r}
-#Code for plot of value filtered skills
-
-##Software
-
-##General
-```
 
 Tidy and transform: put Jeff Hale’s in a form we can compare / pull from. *And then* introduce Jeff Hale’s pretty data for comparison and see what we can lean on.
 
@@ -364,12 +347,22 @@ genl_skills_final <- genl_skills%>%
   filter(Keyword != "Total", LinkedIn != "")%>%
   mutate(total = rowSums(. [2:5]))%>%
   arrange(desc(total))
-##Then sum all rows to get all job search results per keyword and re-plot
+
+#Subset data for most popular observations: visualization, statistics, mathematics, machine learning, deep learning, computer science, communication, analysis
+genl_skills_final <- genl_skills_final %>% filter(total > 3000)
 ```
 
 --------------------------------------------------------------------------------
 
 ### VISUALIZE & ANALYZE
+
+Plot SOFTWARE SKILLS survey results with and without the value filter, side-by-side.
+
+```{r}
+#Plot value filtered v general results side by side (ie. reg v. f_reg) as proportions
+##Can we / Should we apply what Mustafa did for tech_skills here?
+##The only real insight is a difference in proportions and SQL as #2 for Q16
+```
 
 Join the data frames to examine the job board patterns adjacent to the data scientist survey results.
 ```{r}
@@ -391,10 +384,22 @@ keyword_comp%>%
   scale_fill_manual(labels = c("Data Scientist", "Job Board"), values = c("blue", "green")) +
   labs( title = "Date Scientist Recomendations VS Job Board", x = "Software", y = "Share of Mentions", fill = "Source")
 ```
+Python > R > SQL. **Top skills being Machine Learning, Analysis, Statistics.**
+
 
 Plot for value filter (v. regular survey data)
 
-Plot for general skills.
+Examine job board patterns for general skills.
+
+```{r}
+#Plot for general skills from Jeff Hale's dataset
+
+ggplot(genl_skills_final) +
+  geom_bar(aes(x = Keyword , y = total, fill = Keyword), stat = "identity", position = "dodge", width = 1) + coord_flip()
+
+```
+
+Visualization, Statistics, Mathematics, Machine Learning, Computer Science, Communication, Analysis*. **Top skills being Machine Learning, Analysis, Statistics.**
 
 --------------------------------------------------------------------------------
 
@@ -402,3 +407,9 @@ Plot for general skills.
 
 Interpret the visualizations and analysis to draw a clear, concise response to 
 > What are the most valued data science skills?
+
+Discussion of General Survey Results --> Value Filter --> Jeff Hale's Set
+
+Discussion of how our approach changed.
+
+Discussion of major insights gained. What is the answer to the Q?
