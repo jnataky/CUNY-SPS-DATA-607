@@ -49,6 +49,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### BACKGROUND
 
 > What are the most valued data science skills?
+
 Answering this question formed the crux of our project. 
 
 We collaborated in understanding the question at hand, brainstorming an approach and where we might pull data from, deciding on a dataset and then acquiring, tidying & transforming, visualizing & analyzing this dataset before ultimately coming to the conclusion we'll present later.
@@ -97,10 +98,9 @@ By contrasting our sets via different techniques and visualizations, our finding
 Our general approach is outlined below:
 
 1. **Pre-screen:** after viewing the initial Kaggle **2018 Kaggle ML & DS Survey** multiple choice response dataset and seeing that we would not be able to access this dataset via Github due to its size (39+ MB), we deemed “pre-screening” essential. We reviewed all 50 questions from the SurveySchema.csv file and kept only those applicable to the question at hand. Once this dataset had been “pre-screened” it was uploaded to Github along with Jeff Hale’s general and software skill csv files (for later comparison).
-
 2. **Acquire data via reading .csv's:** get the URL, read each .csv from Github (in its raw form), and put the data into tabular form before moving on to tidying and transforming.
 3. **Tidy and transform:** by leaning on the dplyr() library and numerous useful R functions, we extracted a table of questions and a table of answers prior to extracting relevant keywords and counts (for later visualization). Our T&T process was heavy on the **2018 Kaggle ML & DS Survey** data and light for the **The Most in Demand Skills for Data Scientists** data. 
-4. **Visualize and analyze**: once our data was in a more "digestible" form we set out to generate insightful plots regarding the most valuable **software skills** and **general skills**. We plotted (and interpreted) the survey data, and then applied a "value filter" to this data prior to introducing the plots for the **The Most in Demand Skills for Data Scientists** data. The purpose of this tiered approach was to sift for additional insight (if there was any to be found).
+4. **Visualize and analyze**: once our data was in a more "digestible" form we set out to generate insightful plots regarding the most valuable **software skills** and **general skills**. We interpreted the general v. value-filtered survey data, and then introduced plots for the **The Most in Demand Skills for Data Scientists** data. The purpose of this tiered approach was to sift for additional insight (if there was any to be found).
 5. **Conclude**: after applying our tiered approach, we drew insight from the story our data told and came to a conclusion. More on this later :)
 
 --------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ genl_skills <- as_tibble(data3)
 
 Once we had our data at hand, we set out to make sense of this data and put it in a more digestible (normalized) form for later visualization and analysis.
 
-For this phase of the project, we added to the more ordinary of R functions with our use of the dplyr() library. We removed columns and rows, renamed columns, transposed our data into long form, gathered essential columns into different data frames, extracted relevant counts, and created "light" visualizations meant to provide insight as to what v. wasn't valuable and essential for the next phase. 
+For this phase of the project, we added to the more ordinary of R functions with our use of the dplyr() library. We removed columns and rows, renamed columns, transposed our data into long form, gathered essential columns into different data frames, extracted relevant counts, and created "light" visualizations meant to provide insight as to what v. wasn't essential for the next phase. 
 
 Our T&T process was heavy on the **2018 Kaggle ML & DS Survey** data and light for the **The Most in Demand Skills for Data Scientists** data, and took the following form: 
 
