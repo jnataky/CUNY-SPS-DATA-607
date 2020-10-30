@@ -558,5 +558,12 @@ bind_rows(
 
 The above plot, makes it clear as day that where the *bing* lexicon may be slightly positive (it's not all that clear in the plot), the *loughran* lexicon has a **heavily negative** sentiment.
 
-The takeaway ... it's of the utmost importance that we inform ourselves on the data we're working with and choose our lexicon wisely.
+#### CONCLUSION
 
+The *bing* lexicon proved to be more useful for the Declaration of Indepencence because it was more objective / neutral in stance whereas the *loughran* lexicon seemed to have a negative sway to it. 
+
+This may be because financiers label words we might otherwise perceive as neutral as negative, or it may be for some other reason. More research into the matter would be required to come away with a clearer conclusion on the matter.
+
+Needless to say, I'm more interested in reading the Declaration of Independence to judge for myself :)
+
+The takeaway of this assignment may just have been that it's of the utmost importance that we inform ourselves on the data we're working with and choose our lexicon wisely.
