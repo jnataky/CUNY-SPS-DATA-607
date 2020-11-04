@@ -1,0 +1,146 @@
+---
+title: "DATA 607 Discussion / Assignment 11"
+author: "Magnus Skonberg"
+date: "`r Sys.Date()`"
+output: 
+    html_document:
+        toc: true
+        toc_float: true
+        number_sections: false
+        theme: cerulean
+        highlight: tango
+        font-family: "Arial"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### BACKGROUND
+
+The purpose of this assignment is to analyze an existing, interesting *recommender system*.
+
+I elected to analyze one of the world's largest, most efficient, and innovative tech companies. A company that had to create its recommendation algorithm because none at the time could scale  ...
+
+<center>
+
+![](C:/Users/magnu/Documents/images/amazon.jpg){width=50%}
+
+</center>
+
+--------------------------------------------------------------------------------
+
+### SCENARIO DESIGN
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
+*Perform a Scenario Design analysis (as described in assignment spec).  Consider whether it makes sense for your selected recommender system to perform scenario design twice, once for the organization (e.g. Amazon.com) and once for the organization's customers.*
+
+</div> \hfill
+
+**Who are your key users?**
+
+Amazon's key user base is virtually anyone with an internet connection. Whether the user is seeking physical or digital products, the aim is to have something for everyone and be able to accurately recommend based on their preferences.
+
+
+**What are their key goals?**
+
+The user's #1 goal is convenience. That's why they'd opt for e-shopping over visting a brick-and-mortar store and risking better pricing elsewhere or the store not even carrying what they're looking for.
+
+The customer's goal is to shop for and procure products (whether physical or digital) safely, reliably, and at the best price point possible. To be able to order the things they need from the comfort of their own home and know that the delivery, price point, quality, etc. of the product they desire is all but guaranteed. 
+
+
+**How can you help them accomplish these goals?**
+
+We can help the customer accomplish this goal by offering:
+
+* competitive pricing
+
+* wide-ranging products
+
+* **a simple UI (account setup, product search, recommendation, and ordering process)**
+
+* one-click ordering
+
+* **accurate reviews**
+
+* timely delivery
+
+* benefits (ie. 2 day delivery) for opting in to our subscription service.
+
+The above list is all-encompassing and the two bolded items highlight those most related to recommender systems (the focus of this week's assignment.)
+
+Providing product recommendations that are more and more tailored to their needs, what they are interested in, and where they are at in life is one of Amazon's major focus points. Becoming all but indispensible to the customer. Making their shopping experience so simple and convenient that they may wonder how they ever got by / operated before Amazon.
+
+**Does it makes sense for your selected recommender system to perform scenario design twice, once for the organization (e.g. Amazon.com) and once for the organization's customers?** 
+
+No, it does not make sense. Performing recommender system scenario design for the customer is all that is essential, being that knowing the customer is knowing ourselves (at Amazon). 
+
+### REVERSE ENGINEERING
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
+*Attempt to reverse engineer what you can about the site, from the site interface and any available information that you can find on the Internet or elsewhere.*
+
+</div> \hfill\break
+
+Amazon broke with tradition in developing its recommendation algorithm, and focused on **item-to-item collaborative filtering** rather than user-to-user filtering. The algorithm generates lists based on product similarity rather than user similarity and can be summed up as followed:
+
+* match each of the user’s purchased and rated items to similar items, 
+
+* combine these similar items into the recommendation list, and then 
+
+* display this list to the user. 
+
+The graphic below (downloaded from [medium.com](https://medium.com/@tomar.ankur287/item-item-collaborative-filtering-recommender-system-in-python-cf3c945fae1e)) provides a simple and clean visualization of item-based filtering:
+
+<center>
+
+![](C:/Users/magnu/Documents/images/item.png){width=50%}
+
+</center>
+
+
+### IMPROVEMENT RECOMMENDATIONS
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
+*Include specific recommendations about how to improve the site's recommendation capabilities going forward.*
+
+</div> \hfill\break
+
+Amazon’s recommender system is largely tied to their success and growth as an organization. Today, Amazon is synonymous with “e-commerce”, “big data”, and “convenience”. They’ve consistently hit their mark for more than 2 decades now and established an incredibly firm foothold.
+With that said, there’s always room to improve. One approach for further improving the site’s recommendation capabilities might lie in:
+
+* Incentivizing users ranking products. This might come in the form of something simple like “limited time $10 gift card for 10 rankings” or something along those lines and could help provide a more accurate gauge regarding individual consumption.
+
+* Simplifying the UI/UX. One method might be to apply Pareto’s principle to links or recommendation blocks that may distract. For instance, if I use Amazon 80% of the time to order books yet ~50% of the time I’m offered clothes or other products that aren’t really what I’m looking for this might distract the user, lessen their experience, and take away from Amazon's aim of being the ultimate e-commerce platform.
+
+It’s likely Amazon knows something I don’t and I may not be standing on firm ground here, but there are times I’m distracted by all the recommendations and links on the page and end up closing out.
+
+--------------------------------------------------------------------------------
+
+### REFERENCES
+
+In researching Amazon as a company and responses to the above prompts, I referred to a number of sources (cited APA style below):
+
+1. Linden, Greg & Smith, Brent & York, Jeremy. (2003). *Amazon.com Recommendations: Item-to-Item Collaborative Filtering*. IEEE [pdf file]. 
+
+2. Martinez, Michael. *Amazon: everything you wanted to know about its algorithm and innovation*. IEEE Computer Society. https://www.computer.org/publications/tech-news/trends/amazon-all-the-research-you-need-about-its-algorithm-and-innovation 
+
+3. Hardesty, Larry. *The history of Amazon's recommendation algorithm*. Amazon. https://www.amazon.science/the-history-of-amazons-recommendation-algorithm
+
+4. Frontline PBS. (2020) *Amazon Empire: the Rise and Reign of Jeff Bezos*. Youtube [video]. https://www.youtube.com/watch?v=RVVfJVj5z8s&t=2s
+
+The responses provided above sit atop the shoulders of the authors of these excellent sources, which I would highly recommend for those interested in learning more about Amazon (as a company) and its recommender systems.
