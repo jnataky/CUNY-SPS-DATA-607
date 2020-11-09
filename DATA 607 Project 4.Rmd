@@ -1,0 +1,125 @@
+---
+title: "DATA 607 - Project 4"
+author: "Jered Ataky, Magnus Skonberg"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    df_print: paged
+    smooth_scroll: yes
+    toc_collapsed: yes
+    toc_depth: 5
+    toc_float: yes
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '5'
+    toc_float: yes
+    code_folding: "hide"
+---
+
+```{r echo = FALSE}
+knitr::opts_chunk$set(eval = TRUE, results = TRUE, fig.show = "asis", message = FALSE)
+```
+
+
+```{r load-packages, include=FALSE}
+library(tidyverse)
+library(knitr)
+library(R.utils)
+```
+
+### Background
+
+The focus of this project is **document classification**. 
+
+For this project, we will start with a corpus dataset, unzip our data, generate a training model that we'll then use to predict the class of new documents (those withheld from the training set or taken from another source), and then analyze the accuracy of our predictive classifier.
+
+### Download Data
+
+We lean on the R.utils library to *automatically* download, bunzip, extract the contents of tar archive into our "emails" directory, and then create a corresponding list of file names from the spam and ham emails available on [spamassassin](https://spamassassin.apache.org/old/publiccorpus/):
+```{r}
+#Download, bunzip, and untar spam_2 files into "emails" directory
+#download.file("http://spamassassin.apache.org/old/publiccorpus/20050311_spam_2.tar.bz2", destfile= "20050311_spam_2.tar.bz2")
+#bunzip2("20050311_spam_2.tar.bz2")
+#untar("20050311_spam_2.tar", exdir="emails")
+
+#Create corresponding list of file names for spam_2 and exclude cmds file
+spam_list = list.files("emails\\spam_2\\") 
+spam_list = spam_list[which(spam_list!="cmds")]
+
+
+#Download, bunzip, and untar easy_ham files into "emails" directory
+#download.file("http://spamassassin.apache.org/old/publiccorpus/20030228_easy_ham.tar.bz2", destfile="20030228_easy_ham.tar.bz2")
+#bunzip2("20030228_easy_ham.tar.bz2")
+#untar("20030228_easy_ham.tar", exdir = "emails")
+
+#Create corresponding list of file names for easy_ham and exclude cmds file
+ham_list = list.files("emails\\easy_ham\\")
+ham_list=ham_list[which(ham_list!="cmds")]
+
+```
+
+We now character vectors of file names available as spam_list and ham_list. From these lists, we want to create a corpus of training and then test documents. In order to do so ...
+
+### Creation of Corpus
+
+Writing
+
+```{r}
+#code
+
+```
+
+### Preprocessing of Corpus
+
+Writing
+
+```{r}
+#code
+```
+
+### Creation of Term Document Matrix
+
+Writing
+
+```{r}
+#code
+```
+
+### Prepare Labels and Features for Matrix
+
+Writing
+
+```{r}
+#code
+```
+
+### Create Training and Test Data
+
+Writing
+
+```{r}
+#code
+```
+
+### Run the Model
+
+Writing
+
+```{r}
+#code
+```
+
+### Test the Model
+
+Writing
+
+```{r}
+#code
+```
+
+### Analyze
+
+Write regarding the approach we took, any interesting insights gained over the course of the project or specific to the ham/spam emails, and provide feedback regarding how we might have improved / had a smoother approach.
