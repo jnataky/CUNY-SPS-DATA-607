@@ -28,6 +28,7 @@ knitr::opts_chunk$set(eval = TRUE, results = TRUE, fig.show = "asis", message = 
 library(tidyverse)
 library(knitr)
 library(R.utils)
+library(DT)
 ```
 
 ### Background
@@ -46,9 +47,8 @@ We lean on the R.utils library to *automatically* download, bunzip, extract the 
 #untar("20050311_spam_2.tar", exdir="emails")
 
 #Create corresponding list of file names for spam_2 and exclude cmds file
+if (file.exists("emails\\spam_2\\cmds")) file.remove("emails\\spam_2\\cmds")
 spam_list = list.files("emails\\spam_2\\") 
-spam_list = spam_list[which(spam_list!="cmds")]
-
 
 #Download, bunzip, and untar easy_ham files into "emails" directory
 #download.file("http://spamassassin.apache.org/old/publiccorpus/20030228_easy_ham.tar.bz2", destfile="20030228_easy_ham.tar.bz2")
@@ -56,8 +56,74 @@ spam_list = spam_list[which(spam_list!="cmds")]
 #untar("20030228_easy_ham.tar", exdir = "emails")
 
 #Create corresponding list of file names for easy_ham and exclude cmds file
+if (file.exists("emails\\easy_ham\\cmds")) file.remove("emails\\easy_ham\\cmds")
 ham_list = list.files("emails\\easy_ham\\")
-ham_list=ham_list[which(ham_list!="cmds")]
+
+```
+
+
+#### Get the insights
+
+
+Check the length and the contents
+
+```{r}
+head(spam_list)
+length(spam_list)
+
+```
+
+```{r}
+head(ham_list)
+length(ham_list)
+```
+
+Data frame
+
+```{r}
+# Build data frame
+
+df_mails <- tibble()
+df_mails_folders <- c("emails\\spam_2\\", "emails\\easy_ham")
+df_mails_types <- c("spam", "ham")
+
+```
+
+```{r}
+
+# For loop to feed the data frame
+
+for (i in 1: length(df_mails_folders))
+  
+  {
+        tag <- df_mails_types[i]
+        
+        l <- tibble(file = dir(df_mails_folders[i],  full.names = TRUE)) %>% 
+          
+          mutate(messages = map(file, read_lines)) %>%
+          
+                transmute(id = basename(file), tag = tag, messages) %>%
+                unnest(messages)
+                df_mails<- bind_rows(df_mails, l)
+ }
+```
+
+
+
+```{r}
+
+# Check if each tag counts matched the length we found above
+# To ensure the data frame is correct and have the exact contents (like no cmds or missing sth)
+
+df_mails %>%
+  group_by(tag) %>%
+  summarize(count = n_distinct(id))
+
+```
+
+```{r}
+
+head(df_mails)
 
 ```
 
