@@ -197,7 +197,7 @@ text_final
 # Reduce sparsity 
 
 text_final <- text_final %>% 
-  removeSparseTerms(1-100/length(corpus))
+  removeSparseTerms(1-10/length(clean_corpus))
 
 inspect(text_final)
 
