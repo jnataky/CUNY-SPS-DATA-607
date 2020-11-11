@@ -29,6 +29,9 @@ library(tidyverse)
 library(knitr)
 library(R.utils)
 library(DT)
+library(tm)
+library(wordcloud)
+library(data.table)
 ```
 
 ### Background
@@ -65,18 +68,26 @@ ham_list = list.files("emails\\easy_ham\\")
 #### Get the insights
 
 
+```{r}
+
+df <- as.data.frame(ham_list)
+
+df
+```
+
+
 Check the length and the contents
 
 ```{r}
-head(spam_list)
+
 length(spam_list)
 
 ```
 
 ```{r}
-head(ham_list)
 length(ham_list)
 ```
+
 
 Data frame
 
@@ -89,7 +100,9 @@ df_mails_types <- c("spam", "ham")
 
 ```
 
+
 ```{r}
+
 
 # For loop to feed the data frame
 
@@ -112,31 +125,92 @@ for (i in 1: length(df_mails_folders))
 
 ```{r}
 
-# Check if each tag counts matched the length we found above
-# To ensure the data frame is correct and have the exact contents (like no cmds or missing sth)
+# Build the table with only tag and messages
+# Concatenate the message to be as a single string for a given id
 
-df_mails %>%
-  group_by(tag) %>%
-  summarize(count = n_distinct(id))
+new_df <- df_mails[!duplicated(df_mails$id), ]
+new_df[, 'messages'] <- aggregate (messages~id, data = df_mails, toString) [,2]
+
+head(new_df)
 
 ```
 
+
 ```{r}
 
-head(df_mails)
+# Subset the data frame with only tag and messages 
 
+df_final <- new_df %>%
+  select(tag, messages)
+
+dim(df_final)
 ```
 
 We now character vectors of file names available as spam_list and ham_list. From these lists, we want to create a corpus of training and then test documents. In order to do so ...
 
 ### Creation of Corpus
 
+
+#### Creating corpus
+
 Writing
 
 ```{r}
-#code
+
+# Create corpus from all the messages
+
+text_corpus <- Corpus(VectorSource(df_final$messages))
+print(text_corpus)
 
 ```
+
+
+#### Cleaning corpus
+
+Writing
+
+```{r}
+
+# remove punctuation
+clean_corpus <- tm_map(text_corpus, removePunctuation)
+
+clean_corpus<- tm_map(text_corpus,content_transformer(gsub), pattern="\\W",replace=" ")
+removeURL <- function(x) gsub("http^\\s\\s*", "", x)%>% 
+clean_corpus <- tm_map(clean_corpus, content_transformer(removeURL))
+# remove numbers
+clean_corpus <- tm_map(clean_corpus, removeNumbers)
+
+
+## remove stop words
+clean_corpus <- tm_map(clean_corpus, removeWords, stopwords())
+## remove whitespace
+clean_corpus <- tm_map(clean_corpus, stripWhitespace)
+
+#translate all letters to lower case
+clean_corpus <- tm_map(clean_corpus, tolower)
+
+```
+
+#### Creation of Term Document Matrix
+
+```{r}
+# Corpus insights
+
+text_final <- TermDocumentMatrix(clean_corpus)
+text_final
+
+```
+
+```{r}
+# Reduce sparsity 
+
+text_final <- text_final %>% 
+  removeSparseTerms(1-100/length(corpus))
+
+inspect(text_final)
+
+```
+
 
 ### Preprocessing of Corpus
 
@@ -146,7 +220,7 @@ Writing
 #code
 ```
 
-### Creation of Term Document Matrix
+#### Prepare Labels and Features for Matrix
 
 Writing
 
@@ -154,15 +228,7 @@ Writing
 #code
 ```
 
-### Prepare Labels and Features for Matrix
-
-Writing
-
-```{r}
-#code
-```
-
-### Create Training and Test Data
+#### Create Training and Test Data
 
 Writing
 
@@ -189,3 +255,4 @@ Writing
 ### Analyze
 
 Write regarding the approach we took, any interesting insights gained over the course of the project or specific to the ham/spam emails, and provide feedback regarding how we might have improved / had a smoother approach.
+
