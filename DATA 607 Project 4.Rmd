@@ -68,14 +68,6 @@ ham_list = list.files("emails\\easy_ham\\")
 #### Get the insights
 
 
-```{r}
-
-df <- as.data.frame(ham_list)
-
-df
-```
-
-
 Check the length and the contents
 
 ```{r}
